@@ -23,7 +23,7 @@ export default async function handler(req, res) {
         messages,
         temperature: 0.7
       })
-    });
+    })
 
     const data = await response.json();
 
