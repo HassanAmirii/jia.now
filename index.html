@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JIA — AI Goal Accountability</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+    <meta property="og:image" content="https://bolt.new/static/og_default.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:image" content="https://bolt.new/static/og_default.png">
+</head>
+  <body>
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">
+          J<span class="logo-accent">I</span>A
+        </div>
+        <div class="date-pill" id="todayDate"></div>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <nav class="tab-nav">
+      <button class="tab-btn active" data-tab="checkin">Check-in</button>
+      <button class="tab-btn" data-tab="progress">Progress</button>
+      <button class="tab-btn" data-tab="reflect">Reflect</button>
+      <button class="tab-btn" data-tab="advisor">AI Advisor</button>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="container">
+
+      <!-- Tab 1: Check-in -->
+      <section class="tab-content active" id="tab-checkin">
+        <div id="goalsContainer"></div>
+        <div id="completionScreen" class="completion-screen hidden">
+          <div class="checkmark">✓</div>
+          <h2>All checked in for today</h2>
+          <p>Come back tomorrow. Stay consistent.</p>
+        </div>
+      </section>
+
+      <!-- Tab 2: Progress -->
+      <section class="tab-content" id="tab-progress">
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="section-title">Effort Heatmap</div>
+        <div class="heatmap-legend"></div>
+        <div class="heatmap" id="heatmap"></div>
+
+        <div class="section-title">Daily Effort Trend</div>
+        <canvas id="effortChart"></canvas>
+
+        <div class="section-title">Goal Overview</div>
+        <div id="goalProgressList"></div>
+      </section>
+
+      <!-- Tab 3: Reflect -->
+      <section class="tab-content" id="tab-reflect">
+        <div class="reflection-card">
+          <label class="reflection-question">What made this week hard or easy? Be honest.</label>
+          <textarea class="reflection-textarea" id="reflect1" rows="4"></textarea>
+        </div>
+
+        <div class="reflection-card">
+          <label class="reflection-question">Which goal deserves more attention next week?</label>
+          <textarea class="reflection-textarea" id="reflect2" rows="4"></textarea>
+        </div>
+
+        <div class="reflection-card">
+          <label class="reflection-question">Is there a new idea or opportunity competing for your focus?</label>
+          <textarea class="reflection-textarea" id="reflect3" rows="4"></textarea>
+        </div>
+
+        <button class="ai-feedback-btn" id="getAiFeedback">Get AI feedback ↗</button>
+
+        <div id="aiFeedbackResult" class="ai-feedback-result hidden"></div>
+      </section>
+
+      <!-- Tab 4: AI Advisor -->
+      <section class="tab-content" id="tab-advisor">
+        <div class="chat-header">
+          <div class="chat-header-left">
+            <span class="status-dot"></span>
+            <div>
+              <div class="chat-title">JIA</div>
+              <div class="chat-subtitle">knows your goals, watching your patterns</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-messages" id="chatMessages"></div>
+
+        <div class="chat-input-container">
+          <div class="quick-prompts">
+            <button class="quick-prompt-btn" data-prompt="Fitness struggling">Fitness struggling ↗</button>
+            <button class="quick-prompt-btn" data-prompt="Evaluate new idea">Evaluate new idea ↗</button>
+            <button class="quick-prompt-btn" data-prompt="Biggest risk">Biggest risk ↗</button>
+            <button class="quick-prompt-btn" data-prompt="Honest review">Honest review ↗</button>
+          </div>
+          <div class="chat-input-row">
+            <input type="text" class="chat-input" id="chatInput" placeholder="Ask about your goals...">
+            <button class="chat-send-btn" id="chatSend">Send</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
