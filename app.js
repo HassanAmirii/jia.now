@@ -1,7 +1,8 @@
 // app.js – JIA (just f'in do it already)
 // DeepSeek API Configuration - replace with env variable for Vercel
-const DEEPSEEK_API_KEY = typeof __DEEPSEEK_KEY__ !== 'undefined' ? __DEEPSEEK_KEY__ : 'PASTE_YOUR_KEY_HERE';
+const DEEPSEEK_API_KEY = prompt("Enter your DeepSeek API key:") || 'PASTE_YOUR_KEY_HERE';
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+
 
 // Mode configurations
 const MODES = {
