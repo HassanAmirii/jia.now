@@ -423,20 +423,27 @@ async function sendChatMessage() {
     sendBtn.disabled = false;
   }
 }
+
 async function callDeepSeekAPI(messages) {
   const response = await fetch('/api/deepseek', {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ messages })
   });
 
-  if (!response.ok) throw new Error('API failed');
-
   const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error?.message || data.error || 'API failed');
+  }
+
+  if (!data.choices || !data.choices.length) {
+    throw new Error('Invalid AI response');
+  }
+
   return data.choices[0].message.content;
 }
+
 
 function getGoalContext() {
   return getGoals().map(g => `${g.name} (${g.progress}%)`).join(', ');
