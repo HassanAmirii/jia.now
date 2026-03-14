@@ -1,6 +1,6 @@
 // app.js – JIA (just f'in do it already)
 // DeepSeek API Configuration - replace with env variable for Vercel
-const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
+const DEEPSEEK_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 // Mode configurations
 const MODES = {
