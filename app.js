@@ -24,19 +24,25 @@ function initializeEmptyData() {
     localStorage.setItem("jia_checkins", JSON.stringify({}));
     localStorage.setItem("jia_history", JSON.stringify({}));
     localStorage.setItem("jia_reflections", JSON.stringify({}));
+    localStorage.setItem("jia_userProfile", JSON.stringify({}));
   }
 }
 
 function initializeUI() {
-  const today = new Date();
-  const dateStr = today.toLocaleDateString("en-US", {
+  updateDateDisplay();
+  setupHeatmapLegend();
+  initializeChat();
+}
+
+async function updateDateDisplay() {
+  const realDate = await getRealTodayString();
+  const dateObj = new Date(realDate);
+  const dateStr = dateObj.toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
     year: "numeric",
   });
   document.getElementById("todayDate").textContent = dateStr;
-  setupHeatmapLegend();
-  initializeChat();
 }
 
 function setupEventListeners() {
@@ -97,6 +103,15 @@ function setupEventListeners() {
       sendChatMessage();
     });
   });
+
+  // Profile save button
+  const saveProfileBtn = document.getElementById("saveProfileBtn");
+  if (saveProfileBtn) {
+    saveProfileBtn.addEventListener("click", saveUserProfile);
+  }
+
+  // Setup sync modal
+  setupSyncModal();
 }
 
 function switchTab(tabName) {
@@ -114,6 +129,7 @@ function switchTab(tabName) {
     document.getElementById("fabAddGoal").style.display = "none";
     if (tabName === "progress") renderProgressTab();
     else if (tabName === "reflect") renderReflectTab();
+    else if (tabName === "profile") loadUserProfile();
   }
 }
 
@@ -164,9 +180,9 @@ function createNewGoal() {
   renderCheckinTab();
 }
 
-function renderCheckinTab() {
+async function renderCheckinTab() {
   const goals = getGoals();
-  const today = getTodayString();
+  const today = await getTodayString();
   const checkins = getCheckins();
   const container = document.getElementById("goalsContainer");
   const completionDiv = document.getElementById("completionScreen");
@@ -295,7 +311,7 @@ function updateGoalName(goalId, newName) {
   }
 }
 
-function handleModeSelection(goalId, mode, today) {
+async function handleModeSelection(goalId, mode, today) {
   const goals = getGoals();
   const goal = goals.find((g) => g.id === goalId);
   if (!goal) return;
@@ -431,6 +447,51 @@ function renderReflectTab() {
   document.getElementById("reflect3").value = reflections.q3 || "";
 }
 
+// ========== USER PROFILE FUNCTIONS ==========
+function loadUserProfile() {
+  const profile = JSON.parse(localStorage.getItem("jia_userProfile") || "{}");
+  const identityEl = document.getElementById("userIdentity");
+  const challengesEl = document.getElementById("userChallenges");
+  const supportEl = document.getElementById("userSupport");
+  const contextEl = document.getElementById("userContext");
+
+  if (identityEl) identityEl.value = profile.identity || "";
+  if (challengesEl) challengesEl.value = profile.challenges || "";
+  if (supportEl) supportEl.value = profile.support || "";
+  if (contextEl) contextEl.value = profile.context || "";
+}
+
+function saveUserProfile() {
+  const profile = {
+    identity: document.getElementById("userIdentity")?.value.trim() || "",
+    challenges: document.getElementById("userChallenges")?.value.trim() || "",
+    support: document.getElementById("userSupport")?.value.trim() || "",
+    context: document.getElementById("userContext")?.value.trim() || "",
+    lastUpdated: new Date().toISOString(),
+  };
+
+  localStorage.setItem("jia_userProfile", JSON.stringify(profile));
+
+  const msg = document.getElementById("profileSaveMessage");
+  if (msg) {
+    msg.classList.remove("hidden");
+    setTimeout(() => msg.classList.add("hidden"), 2000);
+  }
+}
+
+function getUserProfileForAI() {
+  const profile = JSON.parse(localStorage.getItem("jia_userProfile") || "{}");
+  const parts = [];
+
+  if (profile.identity) parts.push(`👤 About me: ${profile.identity}`);
+  if (profile.challenges) parts.push(`⚠️ My challenges: ${profile.challenges}`);
+  if (profile.support) parts.push(`🤝 Support I need: ${profile.support}`);
+  if (profile.context) parts.push(`📝 Extra context: ${profile.context}`);
+
+  return parts.length > 0 ? parts.join("\n") : "No user profile set yet.";
+}
+
+// ========== UPDATED AI FUNCTIONS WITH PROFILE ==========
 async function getReflectionFeedback() {
   const answer1 = document.getElementById("reflect1").value.trim();
   const answer2 = document.getElementById("reflect2").value.trim();
@@ -451,16 +512,21 @@ async function getReflectionFeedback() {
   resultDiv.classList.remove("hidden");
 
   const context = getGoalContext();
+  const userProfile = getUserProfileForAI();
+
   const prompt = `
-Reflection answers:
+USER PROFILE CONTEXT (know this person):
+${userProfile}
+
+CURRENT GOALS:
+${context}
+
+TODAY'S REFLECTION:
 1. What made this week hard or easy? ${answer1}
 2. Which goal deserves more attention? ${answer2}
 3. New idea competing for focus? ${answer3}
 
-Goal Context:
-${context}
-
-Provide honest, specific feedback in 3-4 sentences and one concrete recommendation.
+Based on everything you know about this person, their challenges, and their goals - provide honest, specific feedback in 3-4 sentences and one concrete recommendation. Be personal and reference their profile.
   `.trim();
 
   try {
@@ -470,6 +536,56 @@ Provide honest, specific feedback in 3-4 sentences and one concrete recommendati
     resultDiv.innerHTML = `<p style="color: var(--mode-struggled);">⚠️ ${error.message}</p>`;
   } finally {
     btn.disabled = false;
+  }
+}
+
+async function sendChatMessage() {
+  const input = document.getElementById("chatInput");
+  const message = input.value.trim();
+  if (!message) return;
+
+  const sendBtn = document.getElementById("chatSend");
+  sendBtn.disabled = true;
+
+  const messages = JSON.parse(
+    localStorage.getItem("jia_chat_messages") || "[]",
+  );
+  messages.push({ role: "user", content: message });
+  localStorage.setItem("jia_chat_messages", JSON.stringify(messages));
+  input.value = "";
+  renderChatMessages();
+
+  try {
+    const context = getGoalContext();
+    const userProfile = getUserProfileForAI();
+
+    const systemPrompt = `You are JIA, a sharp AI goal partner. You know this person deeply:
+
+${userProfile}
+
+Their current goals: ${context || "none yet"}
+
+Use their profile context to give personalized advice. Reference their challenges and what they've told you. Be honest, direct, and supportive in the way they need. Keep responses to 3-4 sentences.`;
+
+    const history = messages.slice(-6).map((m) => ({
+      role: m.role === "ai" ? "assistant" : "user",
+      content: m.content,
+    }));
+
+    const response = await callDeepSeekAPI([
+      { role: "system", content: systemPrompt },
+      ...history,
+    ]);
+
+    messages.push({ role: "ai", content: response });
+    localStorage.setItem("jia_chat_messages", JSON.stringify(messages));
+    renderChatMessages();
+  } catch (error) {
+    messages.push({ role: "ai", content: `⚠️ ${error.message}` });
+    localStorage.setItem("jia_chat_messages", JSON.stringify(messages));
+    renderChatMessages();
+  } finally {
+    sendBtn.disabled = false;
   }
 }
 
@@ -498,45 +614,6 @@ function renderChatMessages() {
     })
     .join("");
   container.scrollTop = container.scrollHeight;
-}
-
-async function sendChatMessage() {
-  const input = document.getElementById("chatInput");
-  const message = input.value.trim();
-  if (!message) return;
-
-  const sendBtn = document.getElementById("chatSend");
-  sendBtn.disabled = true;
-
-  const messages = JSON.parse(
-    localStorage.getItem("jia_chat_messages") || "[]",
-  );
-  messages.push({ role: "user", content: message });
-  localStorage.setItem("jia_chat_messages", JSON.stringify(messages));
-  input.value = "";
-  renderChatMessages();
-
-  try {
-    const context = getGoalContext();
-    const systemPrompt = `You are JIA, a sharp AI goal partner. Goals: ${context || "none yet"}. Keep responses to 3-4 sentences.`;
-    const history = messages.slice(-6).map((m) => ({
-      role: m.role === "ai" ? "assistant" : "user",
-      content: m.content,
-    }));
-    const response = await callDeepSeekAPI([
-      { role: "system", content: systemPrompt },
-      ...history,
-    ]);
-    messages.push({ role: "ai", content: response });
-    localStorage.setItem("jia_chat_messages", JSON.stringify(messages));
-    renderChatMessages();
-  } catch (error) {
-    messages.push({ role: "ai", content: `⚠️ ${error.message}` });
-    localStorage.setItem("jia_chat_messages", JSON.stringify(messages));
-    renderChatMessages();
-  } finally {
-    sendBtn.disabled = false;
-  }
 }
 
 async function callDeepSeekAPI(messages) {
@@ -574,12 +651,12 @@ function setupSyncModal() {
   const exportBtn = document.getElementById("exportBtn");
   const importFile = document.getElementById("importFile");
 
-  // Open modal
+  if (!syncBtn) return;
+
   syncBtn.addEventListener("click", () => {
     syncModal.classList.remove("hidden");
   });
 
-  // Close modal functions
   function closeSyncModal() {
     syncModal.classList.add("hidden");
   }
@@ -590,7 +667,6 @@ function setupSyncModal() {
     if (e.target.classList.contains("modal-overlay")) closeSyncModal();
   });
 
-  // Export data
   exportBtn.addEventListener("click", () => {
     const goals = getGoals();
     const checkins = getCheckins();
@@ -601,6 +677,9 @@ function setupSyncModal() {
     const chatMessages = JSON.parse(
       localStorage.getItem("jia_chat_messages") || "[]",
     );
+    const userProfile = JSON.parse(
+      localStorage.getItem("jia_userProfile") || "{}",
+    );
 
     const exportData = {
       version: "1.0",
@@ -610,6 +689,7 @@ function setupSyncModal() {
       history,
       reflections,
       chatMessages,
+      userProfile,
     };
 
     const dataStr = JSON.stringify(exportData, null, 2);
@@ -623,11 +703,9 @@ function setupSyncModal() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    // Show success message briefly
     alert("✅ Progress exported successfully!");
   });
 
-  // Import data
   importFile.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -637,12 +715,10 @@ function setupSyncModal() {
       try {
         const importData = JSON.parse(event.target.result);
 
-        // Validate import data structure
         if (!importData.goals || !importData.checkins || !importData.history) {
           throw new Error("Invalid backup file format");
         }
 
-        // Confirm before overwriting
         if (
           confirm(
             "⚠️ This will replace all your current goals and progress. Continue?",
@@ -668,38 +744,36 @@ function setupSyncModal() {
             "jia_chat_messages",
             JSON.stringify(importData.chatMessages || []),
           );
+          localStorage.setItem(
+            "jia_userProfile",
+            JSON.stringify(importData.userProfile || {}),
+          );
 
           alert("✅ Import successful! Refreshing...");
-          location.reload(); // Refresh to show imported data
+          location.reload();
         }
       } catch (error) {
         alert("❌ Invalid backup file: " + error.message);
       }
     };
     reader.readAsText(file);
-
-    // Clear input so same file can be selected again
     importFile.value = "";
   });
 }
 
-// Add this line inside your DOMContentLoaded event listener
-// Find this section:
-document.addEventListener("DOMContentLoaded", () => {
-  initializeEmptyData();
-  initializeUI();
-  setupEventListeners();
-  renderCheckinTab();
-});
+// ========== INSTANT LOCAL DATE ==========
+async function getRealTodayString() {
+  // Just use local date - instant, no waiting
+  const d = new Date();
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
-// Add the setupSyncModal() call inside it:
-document.addEventListener("DOMContentLoaded", () => {
-  initializeEmptyData();
-  initializeUI();
-  setupEventListeners();
-  setupSyncModal(); // 👈 Add this line
-  renderCheckinTab();
-});
+async function getTodayString() {
+  return await getRealTodayString();
+}
 
 // helpers
 function getGoals() {
@@ -710,7 +784,4 @@ function getCheckins() {
 }
 function getHistory() {
   return JSON.parse(localStorage.getItem("jia_history") || "{}");
-}
-function getTodayString() {
-  return new Date().toISOString().split("T")[0];
 }

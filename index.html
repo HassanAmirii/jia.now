@@ -9,20 +9,26 @@
     <title>JIA · just f'in do it already</title>
     <link rel="stylesheet" href="/style.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+
+    <script src="/app.js" defer></script>
     <!-- Chart.js for progress tab -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   </head>
   <body>
-    <div class="header-content">
-      <div class="logo">JIA.NOW<span class="logo-accent">.</span></div>
-      <div class="date-pill" id="todayDate"></div>
-    </div>
+    <header class="header">
+      <div class="header-content">
+        <div class="logo">JIA.NOW<span class="logo-accent">.</span></div>
+        <div class="date-pill" id="todayDate"></div>
+      </div>
+    </header>
 
     <nav class="tab-nav">
       <button class="tab-btn active" data-tab="checkin">Check-in</button>
       <button class="tab-btn" data-tab="progress">Progress</button>
       <button class="tab-btn" data-tab="reflect">Reflect</button>
       <button class="tab-btn" data-tab="advisor">AI</button>
+      <button class="tab-btn" data-tab="profile">Profile</button>
+      <!-- NEW -->
     </nav>
 
     <main class="container">
@@ -184,6 +190,72 @@
         </div>
       </section>
 
+      <!-- Profile/Context Tab (NEW) -->
+      <section class="tab-content" id="tab-profile">
+        <div class="profile-card">
+          <div class="profile-header">
+            <span class="profile-icon">🧠</span>
+            <div>
+              <div class="profile-title">Your Context</div>
+              <div class="profile-subtitle">What JIA should know about you</div>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <label class="profile-label"
+              >Who are you? (background, identity)</label
+            >
+            <textarea
+              class="profile-textarea"
+              id="userIdentity"
+              rows="3"
+              placeholder="e.g., Self-taught developer, 25, Nigeria, balancing work and personal growth..."
+            ></textarea>
+          </div>
+
+          <div class="profile-section">
+            <label class="profile-label">Current challenges or struggles</label>
+            <textarea
+              class="profile-textarea"
+              id="userChallenges"
+              rows="3"
+              placeholder="e.g., Procrastination, consistency with prayers, comparing myself to others..."
+            ></textarea>
+          </div>
+
+          <div class="profile-section">
+            <label class="profile-label"
+              >What kind of support do you need?</label
+            >
+            <textarea
+              class="profile-textarea"
+              id="userSupport"
+              rows="3"
+              placeholder="e.g., Accountability, tough love, help breaking down goals, motivation..."
+            ></textarea>
+          </div>
+
+          <div class="profile-section">
+            <label class="profile-label"
+              >Additional context (habits, preferences, etc.)</label
+            >
+            <textarea
+              class="profile-textarea"
+              id="userContext"
+              rows="3"
+              placeholder="e.g., I work best in mornings, easily distracted by social media..."
+            ></textarea>
+          </div>
+
+          <button class="save-profile-btn" id="saveProfileBtn">
+            💾 Save Profile Context
+          </button>
+          <div id="profileSaveMessage" class="profile-save-message hidden">
+            ✓ Profile saved!
+          </div>
+        </div>
+      </section>
+
       <!-- Sync/Import/Export Modal -->
       <div class="modal-overlay hidden" id="syncModal">
         <div class="modal-card" style="max-width: 400px">
@@ -236,7 +308,5 @@
         </div>
       </div>
     </main>
-
-    <script src="/app.js"></script>
   </body>
 </html>
