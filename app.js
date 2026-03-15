@@ -667,6 +667,7 @@ function setupSyncModal() {
     if (e.target.classList.contains("modal-overlay")) closeSyncModal();
   });
 
+  // Export data
   exportBtn.addEventListener("click", () => {
     const goals = getGoals();
     const checkins = getCheckins();
@@ -681,11 +682,27 @@ function setupSyncModal() {
       localStorage.getItem("jia_userProfile") || "{}",
     );
 
+    // Convert checkins to use 24-hour format dates
+    const convertedCheckins = {};
+    Object.keys(checkins).forEach((key) => {
+      // Check if the key has a date in YYYY-MM-DD format
+      const parts = key.split("_");
+      if (parts.length === 2) {
+        const goalId = parts[0];
+        const dateStr = parts[1];
+        // Convert to 24-hour format date (YYYY-MM-DD)
+        convertedCheckins[`${goalId}_${dateStr}`] = checkins[key];
+      } else {
+        // Keep as is if format is different
+        convertedCheckins[key] = checkins[key];
+      }
+    });
+
     const exportData = {
-      version: "1.0",
+      version: "2.0", // Updated version
       timestamp: new Date().toISOString(),
       goals,
-      checkins,
+      checkins: convertedCheckins,
       history,
       reflections,
       chatMessages,
@@ -703,9 +720,10 @@ function setupSyncModal() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 
-    alert("✅ Progress exported successfully!");
+    alert("✅ Progress exported successfully! (v2.0 format)");
   });
 
+  // Import data
   importFile.addEventListener("change", (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -724,13 +742,23 @@ function setupSyncModal() {
             "⚠️ This will replace all your current goals and progress. Continue?",
           )
         ) {
+          // Handle version 1.0 data (convert if needed)
+          let checkinsToImport = importData.checkins;
+
+          // If it's version 1.0, ensure dates are in correct format
+          if (importData.version === "1.0") {
+            console.log("Converting v1.0 data to v2.0 format");
+            // v1.0 already uses YYYY-MM-DD format, so no conversion needed
+            // Just pass through
+          }
+
           localStorage.setItem(
             "jia_goals",
             JSON.stringify(importData.goals || []),
           );
           localStorage.setItem(
             "jia_checkins",
-            JSON.stringify(importData.checkins || {}),
+            JSON.stringify(checkinsToImport || {}),
           );
           localStorage.setItem(
             "jia_history",
