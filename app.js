@@ -394,7 +394,7 @@ function renderHeatmap() {
   document.getElementById("heatmap").innerHTML = goals
     .map(
       (g) =>
-        `<div class="heatmap-row"><div class="heatmap-label">${g.name}</div><div class="heatmap-cells">${(history[g.id] || []).map((m) => `<div class="heatmap-cell" style="background:${MODES[m]?.color || "#e5e7eb"};"></div>`).join("")}</div></div>`,
+        `<div class="heatmap-row"><div class="heatmap-label">${g.name}</div><div class="heatmap-cells">${(history[g.id] || []).map((m) => `<div class="heatmap-cell" style="background:${MODES[m]?.color || "#e5e7eb"};" data-mode="${m}"></div>`).join("")}</div></div>`,
     )
     .join("");
 }
@@ -419,7 +419,20 @@ function renderChart() {
     },
     options: {
       responsive: true,
-      scales: { y: { beginAtZero: true, max: 100 } },
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: "bottom",
+          align: "start",
+          labels: {
+            boxWidth: 20,
+            boxHeight: 3,
+            padding: 10,
+            font: { size: 11 },
+          },
+        },
+      },
+      scales: { y: { beginAtZero: true, max: 110 } },
     },
   });
 }
