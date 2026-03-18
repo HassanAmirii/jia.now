@@ -186,8 +186,8 @@ async function renderCheckinTab() {
   // Sleek one-line banner that matches the bottom message style
   if (allCheckedIn && goals.length === 5) {
     html += `
-      <div class="max-goals-message" style="background: var(--primary-accent); color: white; margin-bottom: 16px;">
-        <span style="font-weight: 600;">✓ All checked in for today</span> — come back tomorrow. stay consistent.
+      <div class="max-goals-message" style="color: white; margin-bottom: 16px;">
+        <span style="font-weight: 600; color: #4a9e5c">✓ All checked in for today</span> — come back tomorrow. stay consistent.
       </div>
     `;
   }
