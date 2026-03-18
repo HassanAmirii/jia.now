@@ -7,28 +7,33 @@
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes"
     />
     <title>JIA · just f'in do it already</title>
-    <link rel="stylesheet" href="/style.css" />
+    <link rel="stylesheet" href="style.css" />
     <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-
-    <script src="/app.js" defer></script>
     <!-- Chart.js for progress tab -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <!-- Load scripts in order -->
+    <script src="scripts/utils.js" defer></script>
+    <script src="scripts/goals.js" defer></script>
+    <script src="scripts/progress.js" defer></script>
+    <script src="scripts/profile.js" defer></script>
+    <script src="scripts/chat.js" defer></script>
+    <script src="scripts/sync.js" defer></script>
+    <script src="scripts/ main.js" defer></script>
   </head>
   <body>
     <header class="header">
       <div class="header-content">
-        <div class="logo">JIA.NOW<span class="logo-accent">.</span></div>
+        <div class="logo">JIA<span class="logo-accent">.</span></div>
         <div class="date-pill" id="todayDate"></div>
       </div>
     </header>
 
     <nav class="tab-nav">
-      <button class="tab-btn active" data-tab="checkin">Check</button>
+      <button class="tab-btn active" data-tab="checkin">Check-in</button>
       <button class="tab-btn" data-tab="progress">Progress</button>
       <button class="tab-btn" data-tab="reflect">Reflect</button>
       <button class="tab-btn" data-tab="advisor">AI</button>
       <button class="tab-btn" data-tab="profile">Profile</button>
-      <!-- NEW -->
     </nav>
 
     <main class="container">
@@ -41,7 +46,6 @@
             <button class="modal-close" id="closeModalBtn">✕</button>
             <div class="modal-title">🎯 create a new goal</div>
             <div class="modal-sub">max 5 · be honest</div>
-
             <div class="create-form">
               <div class="form-row">
                 <label>goal name</label>
@@ -87,13 +91,7 @@
             </div>
           </div>
         </div>
-
         <div id="goalsContainer" class="goals-container"></div>
-        <div id="completionScreen" class="completion-screen hidden">
-          <div class="checkmark">✓</div>
-          <h2>All checked in for today</h2>
-          <p>Come back tomorrow. Stay consistent.</p>
-        </div>
       </section>
 
       <!-- Progress tab -->
@@ -108,7 +106,7 @@
         <div id="goalProgressList"></div>
       </section>
 
-      <!-- Reflect tab (AI button styled) -->
+      <!-- Reflect tab -->
       <section class="tab-content" id="tab-reflect">
         <div class="reflection-card">
           <label class="reflection-question"
@@ -149,7 +147,7 @@
         <div id="aiFeedbackResult" class="ai-feedback-result hidden"></div>
       </section>
 
-      <!-- AI Advisor tab (quick prompts fixed for mobile) -->
+      <!-- AI Advisor tab -->
       <section class="tab-content" id="tab-advisor">
         <div class="chat-header">
           <div class="chat-header-left">
@@ -190,7 +188,7 @@
         </div>
       </section>
 
-      <!-- Profile/Context Tab (NEW) -->
+      <!-- Profile Tab -->
       <section class="tab-content" id="tab-profile">
         <div class="profile-card">
           <div class="profile-header">
@@ -200,7 +198,6 @@
               <div class="profile-subtitle">What JIA should know about you</div>
             </div>
           </div>
-
           <div class="profile-section">
             <label class="profile-label"
               >Who are you? (background, identity)</label
@@ -209,20 +206,18 @@
               class="profile-textarea"
               id="userIdentity"
               rows="3"
-              placeholder="e.g., Self-taught developer, 25, Nigeria, balancing work and personal growth..."
+              placeholder="e.g., Self-taught developer, 25, Nigeria..."
             ></textarea>
           </div>
-
           <div class="profile-section">
             <label class="profile-label">Current challenges or struggles</label>
             <textarea
               class="profile-textarea"
               id="userChallenges"
               rows="3"
-              placeholder="e.g., Procrastination, consistency with prayers, comparing myself to others..."
+              placeholder="e.g., Procrastination, consistency..."
             ></textarea>
           </div>
-
           <div class="profile-section">
             <label class="profile-label"
               >What kind of support do you need?</label
@@ -231,22 +226,18 @@
               class="profile-textarea"
               id="userSupport"
               rows="3"
-              placeholder="e.g., Accountability, tough love, help breaking down goals, motivation..."
+              placeholder="e.g., Accountability, tough love..."
             ></textarea>
           </div>
-
           <div class="profile-section">
-            <label class="profile-label"
-              >Additional context (habits, preferences, etc.)</label
-            >
+            <label class="profile-label">Additional context</label>
             <textarea
               class="profile-textarea"
               id="userContext"
               rows="3"
-              placeholder="e.g., I work best in mornings, easily distracted by social media..."
+              placeholder="e.g., I work best in mornings..."
             ></textarea>
           </div>
-
           <button class="save-profile-btn" id="saveProfileBtn">
             💾 Save Profile Context
           </button>
@@ -256,13 +247,12 @@
         </div>
       </section>
 
-      <!-- Sync/Import/Export Modal -->
+      <!-- Sync Modal -->
       <div class="modal-overlay hidden" id="syncModal">
         <div class="modal-card" style="max-width: 400px">
           <button class="modal-close" id="closeSyncModalBtn">✕</button>
           <div class="modal-title">↻ data sync</div>
           <div class="modal-sub">export or import your progress</div>
-
           <div
             style="
               display: flex;
@@ -275,7 +265,6 @@
               <span style="font-size: 1.2rem; margin-right: 8px">⬇️</span>
               export goals & progress
             </button>
-
             <div style="position: relative">
               <button
                 class="sync-action-btn"
@@ -300,7 +289,6 @@
                 "
               />
             </div>
-
             <div style="display: flex; gap: 8px; margin-top: 8px">
               <button class="modal-cancel-btn" id="cancelSyncBtn">close</button>
             </div>
