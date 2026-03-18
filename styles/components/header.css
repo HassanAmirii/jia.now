@@ -1,0 +1,38 @@
+.header {
+  background: var(--card-bg);
+  border-bottom: 0.5px solid var(--border-color);
+  padding: 12px 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  background-color: color-mix(in srgb, var(--card-bg) 90%, transparent);
+}
+
+.header-content {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.logo-accent {
+  color: var(--primary-accent);
+}
+
+.date-pill {
+  background: var(--bg-secondary);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}

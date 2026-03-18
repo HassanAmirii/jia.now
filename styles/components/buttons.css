@@ -1,0 +1,162 @@
+/* FLOATING ADD BUTTON */
+.fab-add {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background: var(--primary-accent);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer;
+  transition:
+    transform 0.2s,
+    background 0.2s;
+  z-index: 20;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.fab-add:hover {
+  transform: scale(1.1);
+  background: #3d8a4e;
+}
+
+/* Sync icon button */
+.sync-icon {
+  position: fixed;
+  bottom: 100px;
+  right: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 30px;
+  background: var(--bg-secondary);
+  border: 0.5px solid var(--border-color);
+  font-size: 2rem;
+  font-weight: 400;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 19;
+  box-shadow: var(--shadow-md);
+  padding: 0;
+  line-height: 1;
+}
+
+.sync-icon:hover {
+  background: var(--border-color);
+  color: var(--text-primary);
+  transform: scale(1.1);
+}
+
+/* Sync action buttons */
+.sync-action-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 40px;
+  padding: 16px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.sync-action-btn:hover {
+  background: var(--border-color);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.modal-cancel-btn {
+  background: transparent;
+  border: 1px solid var(--border-color);
+  border-radius: 40px;
+  padding: 12px 24px;
+  font-size: 0.9375rem;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+.modal-cancel-btn:hover {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+/* Quick prompt buttons */
+.quick-prompt-btn {
+  background: var(--primary-accent);
+  border: none;
+  border-radius: 40px;
+  padding: 12px 8px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow-sm);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.quick-prompt-btn:hover {
+  opacity: 0.85;
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+/* AI Feedback Button */
+.ai-feedback-btn {
+  background: var(--primary-accent);
+  color: white;
+  border: none;
+  border-radius: 60px;
+  padding: 16px 32px;
+  font-weight: 600;
+  font-size: 1.125rem;
+  display: block;
+  margin: 24px auto 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-md);
+  width: fit-content;
+  min-width: 220px;
+  text-align: center;
+  letter-spacing: 0.3px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ai-feedback-btn:hover {
+  opacity: 0.9;
+  transform: scale(1.02);
+  box-shadow: var(--shadow-lg);
+}
+
+.ai-feedback-btn:active {
+  transform: scale(0.98);
+}
+
+.ai-feedback-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}

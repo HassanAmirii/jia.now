@@ -1,0 +1,18 @@
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px 16px 32px;
+  position: relative;
+  min-height: 70vh;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.tab-content {
+  display: none;
+  width: 100%;
+}
+
+.tab-content.active {
+  display: block;
+}

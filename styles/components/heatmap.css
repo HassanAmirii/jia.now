@@ -1,0 +1,93 @@
+.heatmap-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border-radius: 40px;
+  justify-content: center;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  font-weight: 500;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.legend-item[data-mode="Locked In"] .legend-color,
+.legend-color.mode-locked {
+  background: var(--mode-locked);
+}
+.legend-item[data-mode="Moving"] .legend-color,
+.legend-color.mode-moving {
+  background: var(--mode-moving);
+}
+.legend-item[data-mode="Crawling"] .legend-color,
+.legend-color.mode-crawling {
+  background: var(--mode-crawling);
+}
+.legend-item[data-mode="Struggled"] .legend-color,
+.legend-color.mode-struggled {
+  background: var(--mode-struggled);
+}
+.legend-item[data-mode="Skipped"] .legend-color,
+.legend-color.mode-skipped {
+  background: var(--mode-skipped);
+}
+
+.heatmap {
+  background: var(--card-bg);
+  border: 0.5px solid var(--border-color);
+  border-radius: 20px;
+  padding: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.heatmap-row {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+  min-width: min-content;
+}
+
+.heatmap-label {
+  width: 100px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
+}
+
+.heatmap-cells {
+  display: flex;
+  gap: 4px;
+}
+
+.heatmap-cell {
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+#effortChart {
+  background: var(--card-bg);
+  border-radius: 20px;
+  padding: 12px;
+  max-height: 260px;
+  width: 100% !important;
+  height: auto !important;
+  margin-bottom: 16px;
+}

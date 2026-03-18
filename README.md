@@ -39,8 +39,23 @@ jia.now/
 ├── netlify.toml            # Netlify config & function routing
 ├── favicon.svg
 ├── styles/
-│   ├── style.css
-│   └── footer.css
+│   ├── base.css          # Reset, variables, body styles
+|   ├── docs.css
+├── components/
+│   ├──header.css    # Header, logo, date pill
+│   ├── navigation.css # Tab navigation
+│   ├── buttons.css   # FAB, sync icon, all button variants
+│   ├── modals.css    # Modal overlay, cards, forms
+│   ├── goal-cards.css # Goal cards, progress bars, mode buttons
+│   ├── heatmap.css   # Heatmap and legend
+│   ├── chat.css      # AI advisor chat interface
+│   ├── profile.css   # Profile tab styles
+│   └── footer.css    # Footer styles
+├── layouts/
+│   ├── container.css # Container, grid layouts
+│   └── stats.css     # Stats grid
+└── utils/
+    └── responsive.css # All media queries and responsive fixes
 ├── scripts/
 │   ├── utils.js
 │   ├── goals.js

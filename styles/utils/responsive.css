@@ -1,0 +1,225 @@
+/* Import file input hack */
+#importFile {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* ===== MOBILE RESPONSIVE FIXES ===== */
+@media (max-width: 600px) {
+  .tab-btn {
+    padding: 8px 12px !important;
+    font-size: 0.8rem !important;
+  }
+
+  .tab-nav {
+    gap: 4px !important;
+    padding: 6px !important;
+  }
+
+  .container {
+    padding: 20px 12px 32px;
+  }
+
+  .profile-card {
+    padding: 20px 16px;
+    border-radius: 24px;
+  }
+
+  .profile-header {
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+  }
+
+  .profile-icon {
+    font-size: 2rem;
+  }
+
+  .profile-title {
+    font-size: 1.25rem;
+  }
+
+  .profile-subtitle {
+    font-size: 0.75rem;
+  }
+
+  .profile-section {
+    margin-bottom: 18px;
+  }
+
+  .profile-textarea {
+    padding: 14px;
+    font-size: 0.875rem;
+    border-radius: 16px;
+  }
+
+  .save-profile-btn {
+    padding: 14px 20px;
+    font-size: 0.9375rem;
+    border-radius: 40px;
+  }
+
+  .goal-card {
+    padding: 16px;
+  }
+
+  .goal-name {
+    font-size: 1rem;
+  }
+
+  .mode-buttons {
+    gap: 4px;
+  }
+
+  .mode-btn {
+    padding: 8px 0;
+    font-size: 0.65rem;
+  }
+
+  .quick-prompts {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .quick-prompt-btn {
+    padding: 10px 4px;
+    font-size: 0.7rem;
+    white-space: normal;
+    min-height: 44px;
+    line-height: 1.2;
+  }
+
+  .chat-input-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .chat-input {
+    width: 100%;
+    min-width: 100%;
+  }
+
+  .chat-send-btn {
+    width: 100%;
+  }
+
+  .fab-add,
+  .sync-icon {
+    width: 52px;
+    height: 52px;
+    font-size: 1.75rem;
+  }
+
+  .sync-icon {
+    bottom: 90px;
+  }
+
+  .modal-card {
+    padding: 24px 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .importance-option {
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  .heatmap-label {
+    width: 80px;
+    font-size: 0.7rem;
+  }
+
+  .heatmap-legend {
+    gap: 8px;
+    padding: 6px 10px;
+  }
+
+  .legend-item {
+    font-size: 0.65rem;
+  }
+
+  .legend-color {
+    width: 14px;
+    height: 14px;
+  }
+
+  #effortChart {
+    max-height: 230px !important;
+    padding: 8px !important;
+  }
+}
+
+/* Extra small devices */
+@media (max-width: 380px) {
+  .profile-header {
+    justify-content: center;
+    text-align: center;
+    gap: 8px;
+  }
+
+  .profile-title {
+    font-size: 1.1rem;
+  }
+
+  .quick-prompts {
+    grid-template-columns: 1fr;
+  }
+
+  .mode-buttons {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 3px;
+  }
+
+  .mode-btn {
+    padding: 6px 0;
+    font-size: 0.55rem;
+  }
+
+  .tab-btn {
+    padding: 6px 10px;
+    font-size: 0.75rem;
+  }
+
+  .heatmap-label {
+    width: 70px;
+    font-size: 0.65rem;
+  }
+
+  .heatmap-cell {
+    width: 18px;
+    height: 18px;
+  }
+}
+
+/* Fix for notched phones */
+@supports (padding: max(0px)) {
+  .fab-add {
+    bottom: max(24px, env(safe-area-inset-bottom));
+    right: max(24px, env(safe-area-inset-right));
+  }
+
+  .sync-icon {
+    bottom: max(100px, calc(env(safe-area-inset-bottom) + 90px));
+    right: max(24px, env(safe-area-inset-right));
+  }
+}
+
+/* SIMPLE MOBILE FIX */
+@media (max-width: 600px) {
+  body,
+  html,
+  .container,
+  .tab-content,
+  .profile-card {
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
+    width: 100% !important;
+  }
+}
