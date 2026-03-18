@@ -1,9 +1,6 @@
 /* Footer styles - add to your existing CSS */
 .footer {
-  margin-top: 4rem;
   padding: 2rem;
-  border-top: 1px solid #1e1e2e;
-  background: #0a0a0f;
   text-align: center;
 }
 
