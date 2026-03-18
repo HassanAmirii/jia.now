@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Goal Tracker · Documentation</title>
+    <link rel="stylesheet" href="styles/docs.css" />
+  </head>
+  <body>
+    <div class="docs-container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <h2>Goal Tracker Docs</h2>
+          <p>v2.0 · Developer Guide</p>
+        </div>
+
+        <ul class="nav">
+          <li class="nav-item">
+            <a href="#introduction" class="nav-link active">Introduction</a>
+          </li>
+          <li class="nav-item">
+            <a href="#philosophy" class="nav-link">Philosophy</a>
+          </li>
+
+          <div class="nav-section">Core Concepts</div>
+          <li class="nav-item">
+            <a href="#five-goals" class="nav-link">Why Only 5 Goals?</a>
+          </li>
+          <li class="nav-item">
+            <a href="#progress-tracking" class="nav-link">Progress Tracking</a>
+          </li>
+          <li class="nav-item">
+            <a href="#checkins" class="nav-link">Check-in System</a>
+          </li>
+          <li class="nav-item">
+            <a href="#history" class="nav-link">History & Patterns</a>
+          </li>
+
+          <div class="nav-section">Technical</div>
+          <li class="nav-item">
+            <a href="#data-structure" class="nav-link">Data Structure</a>
+          </li>
+          <li class="nav-item">
+            <a href="#calculations" class="nav-link">Calculations</a>
+          </li>
+          <li class="nav-item">
+            <a href="#ai-integration" class="nav-link">AI Integration</a>
+          </li>
+          <li class="nav-item">
+            <a href="#local-storage" class="nav-link">Local Storage</a>
+          </li>
+
+          <div class="nav-section">Developer</div>
+          <li class="nav-item">
+            <a href="#api-reference" class="nav-link">API Reference</a>
+          </li>
+          <li class="nav-item">
+            <a href="#extending" class="nav-link">Extending the System</a>
+          </li>
+          <li class="nav-item">
+            <a href="#contributing" class="nav-link">Contributing</a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <div class="doc-header">
+          <h1>Goal Tracker Documentation</h1>
+          <p>
+            A minimalist, developer-focused goal tracking system with AI-powered
+            insights
+          </p>
+        </div>
+
+        <!-- Introduction -->
+        <section id="introduction" class="doc-section">
+          <h2>Introduction</h2>
+          <div class="doc-card">
+            <p>
+              The Goal Tracker is a lightweight, single-page application
+              designed for developers who want to track goals with precision and
+              get AI-powered feedback. Unlike traditional habit trackers, this
+              system focuses on:
+            </p>
+            <ul style="margin-left: 1.5rem; margin-top: 1rem; color: #a0a0b0">
+              <li>Intentional goal setting (max 5 goals)</li>
+              <li>Nuanced progress tracking (5 states)</li>
+              <li>Pattern recognition through history</li>
+              <li>AI-powered honest feedback</li>
+              <li>Local-first data storage</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- Philosophy -->
+        <section id="philosophy" class="doc-section">
+          <h2>Philosophy</h2>
+          <div class="doc-card">
+            <p>Built by a developer for developers. The system embraces:</p>
+            <div style="display: grid; gap: 1rem; margin-top: 1rem">
+              <div>
+                <span class="badge blue">Less is more</span>
+                <span class="badge">Deep work</span>
+                <span class="badge">Patterns over streaks</span>
+                <span class="badge">Radical honesty</span>
+              </div>
+              <p style="margin-top: 1rem">
+                The interface is intentionally minimal—no gamification, no
+                streaks, no social features. Just you, your goals, and honest
+                reflection.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Five Goals -->
+        <section id="five-goals" class="doc-section">
+          <h2>Why Only 5 Goals?</h2>
+          <div class="doc-card">
+            <p>
+              Research in behavioral psychology suggests that humans have
+              limited cognitive bandwidth for pursuing concurrent goals. The
+              5-goal limit is based on:
+            </p>
+
+            <h4>1. Cognitive Load Theory</h4>
+            <p>
+              Working memory can only hold 4-7 items simultaneously. Beyond 5
+              goals, tracking becomes overwhelming and counterproductive.
+            </p>
+
+            <h4>2. The Warren Buffett "25-5" Rule</h4>
+            <p>
+              List 25 goals, circle top 5—avoid the rest at all costs. Focus
+              creates impact.
+            </p>
+
+            <h4>3. Developer Context</h4>
+            <p>
+              Engineering requires deep focus. Spreading attention across too
+              many goals leads to context switching and shallow progress.
+            </p>
+
+            <div class="note">
+              <p>
+                💡 The system enforces this limit not as a restriction, but as a
+                forcing function for prioritization.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Progress Tracking -->
+        <section id="progress-tracking" class="doc-section">
+          <h2>Progress Tracking States</h2>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th>State</th>
+                <th>Value</th>
+                <th>Description</th>
+                <th>When to use</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span style="color: #4ade80">Locked In</span></td>
+                <td>100%</td>
+                <td>Focused, intentional progress</td>
+                <td>Deep work sessions, meaningful progress</td>
+              </tr>
+              <tr>
+                <td><span style="color: #60a5fa">Moving</span></td>
+                <td>75%</td>
+                <td>Decent progress, not exceptional</td>
+                <td>Solid day, but not breakthrough</td>
+              </tr>
+              <tr>
+                <td><span style="color: #fbbf24">Crawling</span></td>
+                <td>50%</td>
+                <td>Minimal progress, but not zero</td>
+                <td>Bare minimum done, distracted day</td>
+              </tr>
+              <tr>
+                <td><span style="color: #f87171">Struggled</span></td>
+                <td>25%</td>
+                <td>Attempted but faced obstacles</td>
+                <td>Blocked, frustrated, but tried</td>
+              </tr>
+              <tr>
+                <td><span style="color: #6b7280">Skipped</span></td>
+                <td>0%</td>
+                <td>Intentional break or miss</td>
+                <td>Rest day, emergency, or reset</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="doc-card" style="margin-top: 1rem">
+            <h4>Why these specific states?</h4>
+            <p>
+              Traditional binary tracking (done/not done) misses nuance. A day
+              where you're blocked but tried is different from a day you
+              completely ignored a goal. These 5 states capture the spectrum of
+              real human progress.
+            </p>
+          </div>
+        </section>
+
+        <!-- Check-in System -->
+        <section id="checkins" class="doc-section">
+          <h2>Check-in System</h2>
+          <div class="doc-card">
+            <p>
+              Check-ins happen daily and are stored with the format:
+              <code>goalId_YYYY-MM-DD</code>
+            </p>
+
+            <h4>Calculation Logic</h4>
+            <div class="code-block">
+              { "Locked In": 100, "Moving": 75, "Crawling": 50, "Struggled": 25,
+              "Skipped": 0 }
+            </div>
+
+            <h4>Progress Aggregation</h4>
+            <p>
+              Overall goal progress is calculated as the average of the last 7
+              check-ins (or all available if less than 7). This smooths out
+              daily fluctuations and shows true momentum.
+            </p>
+          </div>
+        </section>
+
+        <!-- History & Patterns -->
+        <section id="history" class="doc-section">
+          <h2>History & Pattern Recognition</h2>
+          <div class="doc-card">
+            <p>
+              The system maintains a history array for each goal, which enables:
+            </p>
+            <ul style="margin-left: 1.5rem; margin-top: 0.5rem">
+              <li>Visual progress tracking over time</li>
+              <li>Pattern detection (e.g., always skipping on weekends)</li>
+              <li>AI context for more relevant feedback</li>
+              <li>Momentum calculations</li>
+            </ul>
+
+            <h4>History Structure</h4>
+            <div class="code-block">
+              "history": { "goalId": ["Locked In", "Moving", "Skipped",
+              "Crawling"] }
+            </div>
+
+            <p>
+              The array maintains chronological order (oldest to newest) and is
+              capped at 30 entries to prevent bloat.
+            </p>
+          </div>
+        </section>
+
+        <!-- Data Structure -->
+        <section id="data-structure" class="doc-section">
+          <h2>Complete Data Structure</h2>
+          <div class="code-block">
+            { "version": "2.0", "timestamp": "ISO-8601", "goals": [ { "id":
+            "timestamp-based", "name": "Goal name", "timeframe":
+            "Q1|Q2|Q3|Q4|Full Year", "importance": "high|medium|low", "why":
+            "Motivation/reason", "progress": 0-100 } ], "checkins": {
+            "goalId_YYYY-MM-DD": "state" }, "history": { "goalId": ["state1",
+            "state2", ...] }, "reflections": { "q1": "Quarterly reflection",
+            "q2": "", "q3": "" }, "chatMessages": [...], "userProfile": {
+            "identity": "", "challenges": "", "support": "", "context": "",
+            "lastUpdated": "" } }
+          </div>
+        </section>
+
+        <!-- Calculations -->
+        <section id="calculations" class="doc-section">
+          <h2>Calculation Methods</h2>
+
+          <div class="doc-card">
+            <h4>Goal Progress</h4>
+            <p>
+              <code>progress = sum(state_values) / count(checkins) * 100</code>
+            </p>
+            <p>
+              Only includes check-ins from the last 7 days for current momentum.
+            </p>
+          </div>
+
+          <div class="doc-card">
+            <h4>Overall Progress</h4>
+            <p><code>overall = average(all goal progresses)</code></p>
+          </div>
+
+          <div class="doc-card">
+            <h4>Consistency Score</h4>
+            <p>
+              Calculated as:
+              <code
+                >(Locked In count * 1.0 + Moving * 0.75 + Crawling * 0.5 +
+                Struggled * 0.25) / total_days</code
+              >
+            </p>
+          </div>
+
+          <div class="doc-card">
+            <h4>Risk Assessment</h4>
+            <p>
+              AI analyzes patterns: if "Skipped" appears 3+ times in 7 days for
+              high-priority goals, triggers warning.
+            </p>
+          </div>
+        </section>
+
+        <!-- AI Integration -->
+        <section id="ai-integration" class="doc-section">
+          <h2>AI Integration</h2>
+          <div class="doc-card">
+            <p>The system uses Google's Gemini AI to provide:</p>
+            <ul style="margin-left: 1.5rem">
+              <li>
+                <strong>Honest reviews</strong> - Brutally honest assessment of
+                current progress
+              </li>
+              <li>
+                <strong>Risk identification</strong> - Spots patterns you might
+                miss
+              </li>
+              <li>
+                <strong>Contextual advice</strong> - Based on your profile and
+                history
+              </li>
+              <li><strong>Motivation</strong> - When you need it most</li>
+            </ul>
+
+            <h4>Prompt Engineering</h4>
+            <p>The system constructs prompts using:</p>
+            <div class="code-block">
+              User context: {userProfile} Current goals: {goals} Recent history:
+              {last7days} Chat history: {last5messages}
+            </div>
+          </div>
+        </section>
+
+        <!-- Local Storage -->
+        <section id="local-storage" class="doc-section">
+          <h2>Local Storage</h2>
+          <div class="doc-card">
+            <p>All data is stored locally in the browser's localStorage:</p>
+            <div class="code-block">
+              // Key: 'goalTrackerData' // No servers, no accounts, no tracking
+              // Export/Import functionality
+              localStorage.getItem('goalTrackerData')
+              localStorage.setItem('goalTrackerData', data)
+            </div>
+            <p>
+              This ensures complete data ownership and privacy. Back up by
+              exporting JSON.
+            </p>
+          </div>
+        </section>
+
+        <!-- API Reference -->
+        <section id="api-reference" class="doc-section">
+          <h2>API Reference</h2>
+
+          <div class="doc-card">
+            <h4>Core Functions</h4>
+            <table class="table">
+              <tr>
+                <td><code>loadData()</code></td>
+                <td>Loads from localStorage or initializes empty</td>
+              </tr>
+              <tr>
+                <td><code>saveData()</code></td>
+                <td>Persists to localStorage</td>
+              </tr>
+              <tr>
+                <td><code>addGoal()</code></td>
+                <td>Creates new goal (max 5)</td>
+              </tr>
+              <tr>
+                <td><code>updateCheckin()</code></td>
+                <td>Records daily progress</td>
+              </tr>
+              <tr>
+                <td><code>calculateProgress()</code></td>
+                <td>Updates goal percentages</td>
+              </tr>
+              <tr>
+                <td><code>updateHistory()</code></td>
+                <td>Maintains history arrays</td>
+              </tr>
+            </table>
+          </div>
+        </section>
+
+        <!-- Extending -->
+        <section id="extending" class="doc-section">
+          <h2>Extending the System</h2>
+          <div class="doc-card">
+            <p>Want to add features? Here are common extension points:</p>
+
+            <h4>1. Add New Progress States</h4>
+            <div class="code-block">
+              // In updateCheckin() function const stateValues = { "Locked In":
+              100, "Moving": 75, "Crawling": 50, "Struggled": 25, "Skipped": 0
+              // Add new: "Crushing It": 110 };
+            </div>
+
+            <h4>2. Custom Reports</h4>
+            <p>
+              Add a reports section that generates weekly/monthly summaries
+              using the history data.
+            </p>
+
+            <h4>3. Goal Categories</h4>
+            <p>
+              Extend goals with categories: "Learning", "Building", "Health",
+              "Spiritual"
+            </p>
+          </div>
+        </section>
+
+        <!-- Contributing -->
+        <section id="contributing" class="doc-section">
+          <h2>Contributing</h2>
+          <div class="doc-card">
+            <p>
+              This is a personal project, but feel free to fork and adapt. The
+              code prioritizes:
+            </p>
+            <ul style="margin-left: 1.5rem">
+              <li><strong>Readability</strong> over cleverness</li>
+              <li><strong>Minimalism</strong> over features</li>
+              <li><strong>Local-first</strong> over cloud</li>
+              <li><strong>Honesty</strong> over gamification</li>
+            </ul>
+
+            <div class="note" style="margin-top: 1rem">
+              <p>
+                🔧 Built with vanilla JS, no frameworks, no build steps. Open
+                index.html and go.
+              </p>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
