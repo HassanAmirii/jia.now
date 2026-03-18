@@ -82,11 +82,13 @@ function setupSyncModal() {
           throw new Error("Invalid backup file format");
         }
 
+        // Inside setupSyncModal, in the import section:
         if (
           confirm(
             "⚠️ This will replace all your current goals and progress. Continue?",
           )
         ) {
+          // Store the imported data
           localStorage.setItem(
             "jia_goals",
             JSON.stringify(importData.goals || []),
@@ -111,6 +113,26 @@ function setupSyncModal() {
             "jia_userProfile",
             JSON.stringify(importData.userProfile || {}),
           );
+
+          // RECALCULATE progress from history
+          const goals = JSON.parse(localStorage.getItem("jia_goals"));
+          const history = JSON.parse(localStorage.getItem("jia_history"));
+
+          goals.forEach((goal) => {
+            const goalHistory = history[goal.id] || [];
+            if (goalHistory.length > 0) {
+              const totalWeight = goalHistory.reduce(
+                (sum, m) => sum + MODES[m].weight,
+                0,
+              );
+              const avgEffort = totalWeight / goalHistory.length;
+              goal.progress = Math.round(avgEffort);
+            } else {
+              goal.progress = 0;
+            }
+          });
+
+          localStorage.setItem("jia_goals", JSON.stringify(goals));
 
           alert("✅ Import successful! Refreshing...");
           location.reload();

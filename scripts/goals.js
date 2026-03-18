@@ -22,11 +22,12 @@ function createNewGoal() {
     timeframe,
     importance,
     why,
-    progress: 0,
+    progress: 0, // Make sure this is explicitly set to 0
   };
 
+  // Initialize empty history for this goal
   const history = getHistory();
-  history[newGoal.id] = [];
+  history[newGoal.id] = []; // Empty array = no history = 0% progress
   localStorage.setItem("jia_history", JSON.stringify(history));
 
   goals.push(newGoal);
@@ -106,19 +107,26 @@ async function handleModeSelection(goalId, mode, today) {
   const checkins = getCheckins();
   const checkinKey = `${goalId}_${today}`;
 
+  // If already checked in today, do nothing
   if (checkins[checkinKey]) {
     renderCheckinTab();
     return;
   }
 
+  // Get history
   const history = getHistory();
   const goalHistory = history[goalId] || [];
+
+  // Add new check-in
   goalHistory.push(mode);
 
+  // Calculate progress based on ALL historical check-ins
+  // This overrides any stored progress value
   const totalWeight = goalHistory.reduce((sum, m) => sum + MODES[m].weight, 0);
   const avgEffort = totalWeight / goalHistory.length;
   goal.progress = Math.round(avgEffort);
 
+  // Save everything
   localStorage.setItem("jia_goals", JSON.stringify(goals));
   checkins[checkinKey] = mode;
   localStorage.setItem("jia_checkins", JSON.stringify(checkins));
@@ -133,7 +141,10 @@ function renderGoalCard(goal, today, checkins) {
   const checkinKey = `${goal.id}_${today}`;
   const isCheckedIn = checkins[checkinKey];
   const mode = isCheckedIn ? checkins[checkinKey] : null;
-  const progressColor = getProgressColor(goal.progress);
+
+  // Ensure progress is a number and default to 0 if undefined
+  const progress = typeof goal.progress === "number" ? goal.progress : 0;
+  const progressColor = getProgressColor(progress);
 
   let modeSection = isCheckedIn
     ? `<div class="mode-confirmation" style="background: ${MODES[mode].color};">${mode}</div>`
@@ -161,8 +172,8 @@ function renderGoalCard(goal, today, checkins) {
       </div>
       <div class="goal-why">${goal.why}</div>
       <div class="progress-section">
-        <div class="progress-label">${goal.progress}% progress</div>
-        <div class="progress-bar"><div class="progress-fill" style="width: ${goal.progress}%; background: ${progressColor};"></div></div>
+        <div class="progress-label">${progress}% progress</div>
+        <div class="progress-bar"><div class="progress-fill" style="width: ${progress}%; background: ${progressColor};"></div></div>
       </div>
       ${modeSection}
     </div>`;
@@ -184,7 +195,7 @@ async function renderCheckinTab() {
     goals.length > 0 && goals.every((goal) => checkins[`${goal.id}_${today}`]);
 
   // Sleek one-line banner that matches the bottom message style
-  if (allCheckedIn && goals.length === 5) {
+  if (allCheckedIn && goals.length > 0) {
     html += `
       <div class="max-goals-message" style="color: white; margin-bottom: 16px;">
         <span style="font-weight: 600; color: #4a9e5c">✓ All checked in for today</span> — come back tomorrow. stay consistent.
