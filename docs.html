@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Goal Tracker · Documentation</title>
+    <title>JIA · Documentation</title>
     <link rel="stylesheet" href="styles/docs.css" />
   </head>
   <body>
@@ -11,8 +11,8 @@
       <!-- Sidebar -->
       <aside class="sidebar">
         <div class="sidebar-header">
-          <h2>Goal Tracker Docs</h2>
-          <p>v2.0 · Developer Guide</p>
+          <h2>JIA. Docs</h2>
+          <p>v2.0 · User Guide</p>
         </div>
 
         <ul class="nav">
@@ -28,7 +28,7 @@
             <a href="#five-goals" class="nav-link">Why Only 5 Goals?</a>
           </li>
           <li class="nav-item">
-            <a href="#progress-tracking" class="nav-link">Progress Tracking</a>
+            <a href="#progress-tracking" class="nav-link">Progress States</a>
           </li>
           <li class="nav-item">
             <a href="#checkins" class="nav-link">Check-in System</a>
@@ -56,7 +56,7 @@
             <a href="#api-reference" class="nav-link">API Reference</a>
           </li>
           <li class="nav-item">
-            <a href="#extending" class="nav-link">Extending the System</a>
+            <a href="#extending" class="nav-link">Extending JIA</a>
           </li>
           <li class="nav-item">
             <a href="#contributing" class="nav-link">Contributing</a>
@@ -67,10 +67,9 @@
       <!-- Main Content -->
       <main class="main-content">
         <div class="doc-header">
-          <h1>Goal Tracker Documentation</h1>
+          <h1>JIA. Documentation</h1>
           <p>
-            A minimalist, developer-focused goal tracking system with AI-powered
-            insights
+            just f'in do it already — a no-fluff AI goal accountability manager
           </p>
         </div>
 
@@ -79,17 +78,20 @@
           <h2>Introduction</h2>
           <div class="doc-card">
             <p>
-              The Goal Tracker is a lightweight, single-page application
-              designed for developers who want to track goals with precision and
-              get AI-powered feedback. Unlike traditional habit trackers, this
-              system focuses on:
+              JIA is a lightweight, single-page application built for people who
+              are serious about their goals and want honest feedback — not
+              dopamine hits from streaks or badges. It combines a structured
+              daily check-in system with an AI advisor that actually knows your
+              history.
             </p>
-            <ul style="margin-left: 1.5rem; margin-top: 1rem; color: #a0a0b0">
+            <ul>
               <li>Intentional goal setting (max 5 goals)</li>
-              <li>Nuanced progress tracking (5 states)</li>
+              <li>
+                Nuanced progress tracking (5 states, not just done/not done)
+              </li>
               <li>Pattern recognition through history</li>
-              <li>AI-powered honest feedback</li>
-              <li>Local-first data storage</li>
+              <li>AI-powered honest feedback via Groq</li>
+              <li>Local-first — your data stays in your browser</li>
             </ul>
           </div>
         </section>
@@ -98,20 +100,19 @@
         <section id="philosophy" class="doc-section">
           <h2>Philosophy</h2>
           <div class="doc-card">
-            <p>Built by a developer for developers. The system embraces:</p>
-            <div style="display: grid; gap: 1rem; margin-top: 1rem">
-              <div>
-                <span class="badge blue">Less is more</span>
-                <span class="badge">Deep work</span>
-                <span class="badge">Patterns over streaks</span>
-                <span class="badge">Radical honesty</span>
-              </div>
-              <p style="margin-top: 1rem">
-                The interface is intentionally minimal—no gamification, no
-                streaks, no social features. Just you, your goals, and honest
-                reflection.
-              </p>
+            <p>JIA is built on a few core beliefs:</p>
+            <div style="margin-top: 1rem">
+              <span class="badge blue">Less is more</span>
+              <span class="badge">Deep work over shallow hustle</span>
+              <span class="badge">Patterns over streaks</span>
+              <span class="badge">Radical honesty</span>
             </div>
+            <p style="margin-top: 1rem">
+              The interface is intentionally minimal — no gamification, no
+              streaks, no social features. Just you, your goals, and honest
+              reflection. JIA will tell you when you're slipping, not
+              congratulate you for opening the app.
+            </p>
           </div>
         </section>
 
@@ -120,33 +121,35 @@
           <h2>Why Only 5 Goals?</h2>
           <div class="doc-card">
             <p>
-              Research in behavioral psychology suggests that humans have
-              limited cognitive bandwidth for pursuing concurrent goals. The
-              5-goal limit is based on:
+              The 5-goal limit isn't a bug — it's the whole point. Here's the
+              reasoning:
             </p>
 
             <h4>1. Cognitive Load Theory</h4>
             <p>
-              Working memory can only hold 4-7 items simultaneously. Beyond 5
-              goals, tracking becomes overwhelming and counterproductive.
+              Working memory holds roughly 4–7 items at a time. Beyond 5 active
+              goals, tracking becomes overwhelming and everything gets shallow
+              attention.
             </p>
 
             <h4>2. The Warren Buffett "25-5" Rule</h4>
             <p>
-              List 25 goals, circle top 5—avoid the rest at all costs. Focus
-              creates impact.
+              Write down 25 goals. Circle your top 5. Avoid everything else at
+              all costs. The other 20 aren't "also-rans" — they're active
+              distractions from what matters most.
             </p>
 
-            <h4>3. Developer Context</h4>
+            <h4>3. Real Progress Requires Focus</h4>
             <p>
-              Engineering requires deep focus. Spreading attention across too
-              many goals leads to context switching and shallow progress.
+              Spreading effort across 10 goals means nothing gets done well. 5
+              forces you to prioritize, and prioritization is half the work.
             </p>
 
             <div class="note">
               <p>
-                💡 The system enforces this limit not as a restriction, but as a
-                forcing function for prioritization.
+                💡 The limit is a forcing function. If you have a new goal and
+                you're at 5, the question isn't "how do I add it" — it's "which
+                current goal matters less?"
               </p>
             </div>
           </div>
@@ -154,7 +157,7 @@
 
         <!-- Progress Tracking -->
         <section id="progress-tracking" class="doc-section">
-          <h2>Progress Tracking States</h2>
+          <h2>Progress States</h2>
 
           <table class="table">
             <thead>
@@ -170,25 +173,25 @@
                 <td><span style="color: #4ade80">Locked In</span></td>
                 <td>100%</td>
                 <td>Focused, intentional progress</td>
-                <td>Deep work sessions, meaningful progress</td>
+                <td>Deep work sessions, meaningful output</td>
               </tr>
               <tr>
                 <td><span style="color: #60a5fa">Moving</span></td>
                 <td>75%</td>
                 <td>Decent progress, not exceptional</td>
-                <td>Solid day, but not breakthrough</td>
+                <td>Solid day, not a breakthrough</td>
               </tr>
               <tr>
                 <td><span style="color: #fbbf24">Crawling</span></td>
                 <td>50%</td>
-                <td>Minimal progress, but not zero</td>
+                <td>Minimal effort, but not zero</td>
                 <td>Bare minimum done, distracted day</td>
               </tr>
               <tr>
                 <td><span style="color: #f87171">Struggled</span></td>
                 <td>25%</td>
-                <td>Attempted but faced obstacles</td>
-                <td>Blocked, frustrated, but tried</td>
+                <td>Attempted but hit obstacles</td>
+                <td>Blocked, frustrated — but you tried</td>
               </tr>
               <tr>
                 <td><span style="color: #6b7280">Skipped</span></td>
@@ -200,12 +203,12 @@
           </table>
 
           <div class="doc-card" style="margin-top: 1rem">
-            <h4>Why these specific states?</h4>
+            <h4>Why not just done/not done?</h4>
             <p>
-              Traditional binary tracking (done/not done) misses nuance. A day
-              where you're blocked but tried is different from a day you
-              completely ignored a goal. These 5 states capture the spectrum of
-              real human progress.
+              Binary tracking hides the truth. A day where you were blocked but
+              still showed up is fundamentally different from a day you didn't
+              even try. These 5 states let JIA (and you) see what's actually
+              happening — and give the AI advisor real signal to work with.
             </p>
           </div>
         </section>
@@ -215,11 +218,12 @@
           <h2>Check-in System</h2>
           <div class="doc-card">
             <p>
-              Check-ins happen daily and are stored with the format:
+              Check-ins are logged daily per goal and stored with the key
+              format:
               <code>goalId_YYYY-MM-DD</code>
             </p>
 
-            <h4>Calculation Logic</h4>
+            <h4>State Values</h4>
             <div class="code-block">
               { "Locked In": 100, "Moving": 75, "Crawling": 50, "Struggled": 25,
               "Skipped": 0 }
@@ -227,9 +231,10 @@
 
             <h4>Progress Aggregation</h4>
             <p>
-              Overall goal progress is calculated as the average of the last 7
-              check-ins (or all available if less than 7). This smooths out
-              daily fluctuations and shows true momentum.
+              A goal's current progress is the average of its last 7 check-ins
+              (or fewer if you haven't logged 7 days yet). This rolling window
+              smooths out single bad days and shows true momentum rather than a
+              lifetime average.
             </p>
           </div>
         </section>
@@ -239,24 +244,29 @@
           <h2>History & Pattern Recognition</h2>
           <div class="doc-card">
             <p>
-              The system maintains a history array for each goal, which enables:
+              Each goal maintains a chronological history array that powers the
+              heatmap, trend chart, and AI context. It enables:
             </p>
-            <ul style="margin-left: 1.5rem; margin-top: 0.5rem">
-              <li>Visual progress tracking over time</li>
-              <li>Pattern detection (e.g., always skipping on weekends)</li>
-              <li>AI context for more relevant feedback</li>
-              <li>Momentum calculations</li>
+            <ul>
+              <li>Visual effort heatmap across time</li>
+              <li>Daily effort trend chart (Chart.js)</li>
+              <li>
+                AI pattern detection (e.g., consistently skipping on specific
+                days)
+              </li>
+              <li>Momentum calculations for the advisor</li>
             </ul>
 
             <h4>History Structure</h4>
             <div class="code-block">
               "history": { "goalId": ["Locked In", "Moving", "Skipped",
-              "Crawling"] }
+              "Crawling", ...] }
             </div>
 
             <p>
-              The array maintains chronological order (oldest to newest) and is
-              capped at 30 entries to prevent bloat.
+              The array is ordered oldest → newest and capped at 30 entries to
+              keep localStorage lean. When the cap is hit, the oldest entry is
+              dropped.
             </p>
           </div>
         </section>
@@ -264,15 +274,22 @@
         <!-- Data Structure -->
         <section id="data-structure" class="doc-section">
           <h2>Complete Data Structure</h2>
+          <div class="doc-card">
+            <p>
+              Everything JIA knows about you lives in a single JSON object in
+              localStorage under the key <code>goalTrackerData</code>:
+            </p>
+          </div>
           <div class="code-block">
             { "version": "2.0", "timestamp": "ISO-8601", "goals": [ { "id":
-            "timestamp-based", "name": "Goal name", "timeframe":
-            "Q1|Q2|Q3|Q4|Full Year", "importance": "high|medium|low", "why":
-            "Motivation/reason", "progress": 0-100 } ], "checkins": {
+            "timestamp-based", "name": "Goal name", "timeframe": "Q1 | Q2 | Q3 |
+            Q4 | Full Year | Monthly", "importance": "high | medium | low",
+            "why": "Your motivation", "progress": 0–100 } ], "checkins": {
             "goalId_YYYY-MM-DD": "state" }, "history": { "goalId": ["state1",
-            "state2", ...] }, "reflections": { "q1": "Quarterly reflection",
-            "q2": "", "q3": "" }, "chatMessages": [...], "userProfile": {
-            "identity": "", "challenges": "", "support": "", "context": "",
+            "state2", ...] }, "reflections": { "q1": "What made this week hard
+            or easy?", "q2": "Which goal needs more attention?", "q3": "Any new
+            ideas competing for focus?" }, "chatMessages": [...], "userProfile":
+            { "identity": "", "challenges": "", "support": "", "context": "",
             "lastUpdated": "" } }
           </div>
         </section>
@@ -283,35 +300,37 @@
 
           <div class="doc-card">
             <h4>Goal Progress</h4>
-            <p>
-              <code>progress = sum(state_values) / count(checkins) * 100</code>
-            </p>
-            <p>
-              Only includes check-ins from the last 7 days for current momentum.
-            </p>
+            <p>Rolling average of the last 7 check-in values:</p>
+            <div class="code-block">
+              progress = sum(last_7_state_values) / 7
+            </div>
+            <p>Focuses on recent momentum, not lifetime average.</p>
           </div>
 
           <div class="doc-card">
             <h4>Overall Progress</h4>
-            <p><code>overall = average(all goal progresses)</code></p>
+            <p>Simple average across all active goals:</p>
+            <div class="code-block">
+              overall = sum(all goal progresses) / goal_count
+            </div>
           </div>
 
           <div class="doc-card">
             <h4>Consistency Score</h4>
-            <p>
-              Calculated as:
-              <code
-                >(Locked In count * 1.0 + Moving * 0.75 + Crawling * 0.5 +
-                Struggled * 0.25) / total_days</code
-              >
-            </p>
+            <p>Weighted effort score across all logged days:</p>
+            <div class="code-block">
+              consistency = ( (locked_in_count × 1.0) + (moving_count × 0.75) +
+              (crawling_count × 0.5) + (struggled_count × 0.25) ) / total_days
+            </div>
           </div>
 
           <div class="doc-card">
-            <h4>Risk Assessment</h4>
+            <h4>Risk Detection</h4>
             <p>
-              AI analyzes patterns: if "Skipped" appears 3+ times in 7 days for
-              high-priority goals, triggers warning.
+              The AI advisor flags a goal as at-risk when
+              <strong>Skipped</strong> appears 3 or more times in the last 7
+              days for a goal marked <strong>high importance</strong>. This
+              surfaces in the Reflect tab feedback and in advisor responses.
             </p>
           </div>
         </section>
@@ -320,28 +339,50 @@
         <section id="ai-integration" class="doc-section">
           <h2>AI Integration</h2>
           <div class="doc-card">
-            <p>The system uses Google's Gemini AI to provide:</p>
-            <ul style="margin-left: 1.5rem">
+            <p>
+              JIA's AI advisor is powered by <strong>Groq</strong> running
+              <strong>LLaMA 3.3 70B</strong> — accessed via a Netlify serverless
+              function (<code>netlify/functions/groq.js</code>) that keeps your
+              API key server-side and never exposes it to the browser.
+            </p>
+
+            <h4>What the AI can do</h4>
+            <ul>
               <li>
-                <strong>Honest reviews</strong> - Brutally honest assessment of
-                current progress
+                <strong>Honest reviews</strong> — brutally direct assessment of
+                your current progress
               </li>
               <li>
-                <strong>Risk identification</strong> - Spots patterns you might
-                miss
+                <strong>Risk identification</strong> — spots patterns you might
+                be rationalizing away
               </li>
               <li>
-                <strong>Contextual advice</strong> - Based on your profile and
-                history
+                <strong>Contextual advice</strong> — tailored to your profile,
+                goals, and history
               </li>
-              <li><strong>Motivation</strong> - When you need it most</li>
+              <li>
+                <strong>Reflection feedback</strong> — analyses your weekly
+                reflect answers and responds
+              </li>
             </ul>
 
-            <h4>Prompt Engineering</h4>
-            <p>The system constructs prompts using:</p>
+            <h4>Prompt Construction</h4>
+            <p>Every AI request is built from live data, not static context:</p>
             <div class="code-block">
-              User context: {userProfile} Current goals: {goals} Recent history:
-              {last7days} Chat history: {last5messages}
+              System prompt includes: - User profile (identity, challenges,
+              support style) - All current goals + importance + why User message
+              includes: - Last 7 days of check-in history per goal - Last 5 chat
+              messages (for continuity) - The user's actual question or
+              reflection answers
+            </div>
+
+            <div class="note">
+              <p>
+                🔒 Chat messages are routed through
+                <code>/.netlify/functions/groq</code>. Your
+                <code>GROQ_API_KEY</code> is an environment variable on Netlify
+                — it is never bundled into the frontend code.
+              </p>
             </div>
           </div>
         </section>
@@ -350,16 +391,20 @@
         <section id="local-storage" class="doc-section">
           <h2>Local Storage</h2>
           <div class="doc-card">
-            <p>All data is stored locally in the browser's localStorage:</p>
+            <p>
+              All goal data is stored locally in your browser. Nothing leaves
+              your device except the messages you send to the AI advisor.
+            </p>
             <div class="code-block">
-              // Key: 'goalTrackerData' // No servers, no accounts, no tracking
-              // Export/Import functionality
+              // Single key stores everything
               localStorage.getItem('goalTrackerData')
-              localStorage.setItem('goalTrackerData', data)
+              localStorage.setItem('goalTrackerData', JSON.stringify(data)) //
+              No accounts. No servers. No tracking.
             </div>
             <p>
-              This ensures complete data ownership and privacy. Back up by
-              exporting JSON.
+              Use <strong>Sync → Export</strong> to download a backup JSON file.
+              You can re-import it on any device to restore your progress.
+              Clearing browser data will wipe everything — export regularly.
             </p>
           </div>
         </section>
@@ -373,27 +418,29 @@
             <table class="table">
               <tr>
                 <td><code>loadData()</code></td>
-                <td>Loads from localStorage or initializes empty</td>
+                <td>
+                  Loads state from localStorage, or initializes empty structure
+                </td>
               </tr>
               <tr>
                 <td><code>saveData()</code></td>
-                <td>Persists to localStorage</td>
+                <td>Persists current state to localStorage</td>
               </tr>
               <tr>
                 <td><code>addGoal()</code></td>
-                <td>Creates new goal (max 5)</td>
+                <td>Creates a new goal (enforces 5-goal max)</td>
               </tr>
               <tr>
-                <td><code>updateCheckin()</code></td>
-                <td>Records daily progress</td>
+                <td><code>updateCheckin(goalId, state)</code></td>
+                <td>Records today's progress state for a goal</td>
               </tr>
               <tr>
-                <td><code>calculateProgress()</code></td>
-                <td>Updates goal percentages</td>
+                <td><code>calculateProgress(goalId)</code></td>
+                <td>Returns rolling 7-day progress percentage</td>
               </tr>
               <tr>
-                <td><code>updateHistory()</code></td>
-                <td>Maintains history arrays</td>
+                <td><code>updateHistory(goalId, state)</code></td>
+                <td>Appends to history array, trims at 30 entries</td>
               </tr>
             </table>
           </div>
@@ -401,27 +448,31 @@
 
         <!-- Extending -->
         <section id="extending" class="doc-section">
-          <h2>Extending the System</h2>
+          <h2>Extending JIA</h2>
           <div class="doc-card">
-            <p>Want to add features? Here are common extension points:</p>
-
             <h4>1. Add New Progress States</h4>
+            <p>
+              In <code>scripts/goals.js</code>, extend the state values map:
+            </p>
             <div class="code-block">
-              // In updateCheckin() function const stateValues = { "Locked In":
-              100, "Moving": 75, "Crawling": 50, "Struggled": 25, "Skipped": 0
-              // Add new: "Crushing It": 110 };
+              const stateValues = { "Locked In": 100, "Moving": 75, "Crawling":
+              50, "Struggled": 25, "Skipped": 0 // e.g. "Crushing It": 120 };
             </div>
 
             <h4>2. Custom Reports</h4>
             <p>
-              Add a reports section that generates weekly/monthly summaries
-              using the history data.
+              The <code>history</code> and <code>checkins</code> objects in
+              localStorage have everything needed to generate weekly or monthly
+              summaries. Hook into <code>scripts/progress.js</code> to add a new
+              chart or export format.
             </p>
 
             <h4>3. Goal Categories</h4>
             <p>
-              Extend goals with categories: "Learning", "Building", "Health",
-              "Spiritual"
+              Extend the goal object with a <code>category</code> field:
+              <code>"Learning"</code>, <code>"Building"</code>,
+              <code>"Health"</code>, etc. The data structure and sync logic will
+              carry it through automatically.
             </p>
           </div>
         </section>
@@ -431,20 +482,20 @@
           <h2>Contributing</h2>
           <div class="doc-card">
             <p>
-              This is a personal project, but feel free to fork and adapt. The
-              code prioritizes:
+              JIA is a personal project — fork it, adapt it, make it yours. The
+              codebase prioritizes:
             </p>
-            <ul style="margin-left: 1.5rem">
+            <ul>
               <li><strong>Readability</strong> over cleverness</li>
-              <li><strong>Minimalism</strong> over features</li>
-              <li><strong>Local-first</strong> over cloud</li>
+              <li><strong>Minimalism</strong> over feature bloat</li>
+              <li><strong>Local-first</strong> over cloud dependency</li>
               <li><strong>Honesty</strong> over gamification</li>
             </ul>
 
             <div class="note" style="margin-top: 1rem">
               <p>
-                🔧 Built with vanilla JS, no frameworks, no build steps. Open
-                index.html and go.
+                🔧 Vanilla JS, no frameworks, no build step. Clone the repo, run
+                <code>netlify dev</code>, and you're live.
               </p>
             </div>
           </div>
