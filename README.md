@@ -61,7 +61,7 @@ jia.now/
 ### Prerequisites
 
 - A [Netlify](https://netlify.com) account
-- A [DeepSeek API](https://platform.deepseek.com) key
+- A [Groq API](https://console.groq.com/home) key
 
 ### Local Development
 
