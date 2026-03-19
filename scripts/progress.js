@@ -197,7 +197,7 @@ function renderChart() {
       scales: {
         y: {
           beginAtZero: true,
-          max: 110,
+          max: 100,
           ticks: { stepSize: 20 },
         },
       },
