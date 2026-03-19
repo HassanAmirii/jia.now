@@ -1,5 +1,43 @@
 // ========== PROGRESS TAB ==========
 
+function toLocalDateStr(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, "0");
+  const d = String(date.getDate()).padStart(2, "0");
+  return `${y}-${m}-${d}`;
+}
+
+function getActivityStartDate() {
+  const checkins = getCheckins();
+  let earliest = null;
+
+  Object.keys(checkins).forEach((key) => {
+    const parts = key.split("_");
+    const dateStr = parts[parts.length - 1];
+    if (dateStr && /^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      const d = new Date(dateStr + "T00:00:00");
+      if (!earliest || d < earliest) earliest = d;
+    }
+  });
+
+  return earliest || new Date();
+}
+
+function getDisplayDates() {
+  const start = getActivityStartDate();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  start.setHours(0, 0, 0, 0);
+
+  const dates = [];
+  const current = new Date(start);
+  while (current <= today) {
+    dates.push(toLocalDateStr(current));
+    current.setDate(current.getDate() + 1);
+  }
+  return dates;
+}
+
 function renderProgressTab() {
   renderStats();
   renderHeatmap();
@@ -64,33 +102,68 @@ function setupHeatmapLegend() {
 
 function renderHeatmap() {
   const goals = getGoals();
-  const history = getHistory();
+  const checkins = getCheckins();
+  const displayDates = getDisplayDates();
+
   document.getElementById("heatmap").innerHTML = goals
-    .map(
-      (g) =>
-        `<div class="heatmap-row"><div class="heatmap-label">${g.name}</div><div class="heatmap-cells">${(history[g.id] || []).map((m) => `<div class="heatmap-cell" style="background:${MODES[m]?.color || "#e5e7eb"};" data-mode="${m}"></div>`).join("")}</div></div>`,
-    )
+    .map((g) => {
+      const cells = displayDates
+        .map((dateStr) => {
+          const checkinKey = `${g.id}_${dateStr}`;
+          const mode = checkins[checkinKey] || null;
+
+          if (!mode) {
+            const skippedColor = MODES["Skipped"]?.color || "#e5e7eb";
+            return `<div class="heatmap-cell" style="background:${skippedColor};" data-mode="Skipped" title="${dateStr}: No entry"></div>`;
+          }
+
+          const color = MODES[mode]?.color || "#e5e7eb";
+          return `<div class="heatmap-cell" style="background:${color};" data-mode="${mode}" title="${dateStr}: ${mode}"></div>`;
+        })
+        .join("");
+
+      return `<div class="heatmap-row"><div class="heatmap-label">${g.name}</div><div class="heatmap-cells">${cells}</div></div>`;
+    })
     .join("");
 }
 
 function renderChart() {
   const goals = getGoals();
-  const history = getHistory();
   if (window.effortChartInstance) window.effortChartInstance.destroy();
   const ctx = document.getElementById("effortChart");
   if (!ctx) return;
 
-  const datasets = goals.map((g, i) => ({
-    label: g.name,
-    data: (history[g.id] || []).map((m) => MODES[m].weight),
-    borderColor: ["#4a9e5c", "#378add", "#ba7517", "#d85a30", "#888780"][i % 5],
-    tension: 0.4,
-  }));
+  const checkins = getCheckins();
+  const displayDates = getDisplayDates();
+
+  const datasets = goals.map((g, i) => {
+    const data = displayDates.map((dateStr) => {
+      const key = `${g.id}_${dateStr}`;
+      const mode = checkins[key] || "Skipped";
+      return MODES[mode].weight;
+    });
+
+    return {
+      label: g.name,
+      data,
+      borderColor: ["#4a9e5c", "#378add", "#ba7517", "#d85a30", "#888780"][
+        i % 5
+      ],
+      tension: 0.4,
+      spanGaps: false,
+    };
+  });
 
   window.effortChartInstance = new Chart(ctx, {
     type: "line",
     data: {
-      labels: Array.from({ length: 14 }, (_, i) => `D${i + 1}`),
+      labels: displayDates.map((dateStr) => {
+        const d = new Date(dateStr + "T00:00:00");
+        return d.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+        });
+      }),
       datasets,
     },
     options: {
@@ -105,6 +178,19 @@ function renderChart() {
             boxHeight: 3,
             padding: 8,
             font: { size: 9 },
+          },
+        },
+        tooltip: {
+          callbacks: {
+            title: (context) => {
+              const dateStr = displayDates[context[0].dataIndex];
+              const d = new Date(dateStr + "T00:00:00");
+              return d.toLocaleDateString("en-US", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              });
+            },
           },
         },
       },
