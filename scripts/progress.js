@@ -38,6 +38,20 @@ function getDisplayDates() {
   return dates;
 }
 
+function recalculateGoalProgress(goalId) {
+  const checkins = getCheckins();
+  const displayDates = getDisplayDates();
+
+  const weights = displayDates.map((dateStr) => {
+    const key = `${goalId}_${dateStr}`;
+    const mode = checkins[key] || "Skipped";
+    return MODES[mode].weight;
+  });
+
+  if (!weights.length) return 0;
+  return Math.round(weights.reduce((a, b) => a + b, 0) / weights.length);
+}
+
 function renderProgressTab() {
   renderStats();
   renderHeatmap();
@@ -214,8 +228,9 @@ function renderGoalProgressList() {
       const avg = Math.round(
         h.reduce((s, m) => s + MODES[m].weight, 0) / (h.length || 1),
       );
-      const progressColor = getProgressColor(g.progress);
-      return `<div class="goal-progress-item"><div class="goal-progress-header"><div class="goal-progress-name">${g.name}</div><div class="goal-progress-meta"><span>Avg effort: ${avg}%</span></div></div><div class="progress-bar"><div class="progress-fill" style="width:${g.progress}%; background: ${progressColor};"></div></div></div>`;
+      const progress = recalculateGoalProgress(g.id); // ← live recalc
+      const progressColor = getProgressColor(progress);
+      return `<div class="goal-progress-item"><div class="goal-progress-header"><div class="goal-progress-name">${g.name}</div><div class="goal-progress-meta"><span>Avg effort: ${avg}%</span></div></div><div class="progress-bar"><div class="progress-fill" style="width:${progress}%; background: ${progressColor};"></div></div></div>`;
     })
     .join("");
 }

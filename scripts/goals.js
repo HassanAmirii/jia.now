@@ -122,9 +122,7 @@ async function handleModeSelection(goalId, mode, today) {
 
   // Calculate progress based on ALL historical check-ins
   // This overrides any stored progress value
-  const totalWeight = goalHistory.reduce((sum, m) => sum + MODES[m].weight, 0);
-  const avgEffort = totalWeight / goalHistory.length;
-  goal.progress = Math.round(avgEffort);
+  goal.progress = recalculateGoalProgress(goal.id);
 
   // Save everything
   localStorage.setItem("jia_goals", JSON.stringify(goals));
@@ -143,7 +141,7 @@ function renderGoalCard(goal, today, checkins) {
   const mode = isCheckedIn ? checkins[checkinKey] : null;
 
   // Ensure progress is a number and default to 0 if undefined
-  const progress = typeof goal.progress === "number" ? goal.progress : 0;
+  const progress = recalculateGoalProgress(goal.id);
   const progressColor = getProgressColor(progress);
 
   let modeSection = isCheckedIn
