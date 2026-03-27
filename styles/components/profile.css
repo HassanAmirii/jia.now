@@ -61,15 +61,35 @@
   font-size: 0.9375rem;
   color: var(--text-primary);
   font-family: inherit;
-  resize: vertical;
+  line-height: 1.5;
+  min-height: 108px;
+  resize: none;
+  overflow-y: hidden;
   transition: all 0.2s;
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-muted) 45%, transparent)
+    transparent;
 }
 
 .profile-textarea:focus {
   outline: none;
   border-color: var(--primary-accent);
   box-shadow: 0 0 0 3px rgba(74, 158, 92, 0.15);
+  background: color-mix(in srgb, var(--bg-secondary) 85%, var(--card-bg));
+}
+
+.profile-textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.profile-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.profile-textarea::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text-muted) 45%, transparent);
+  border-radius: 10px;
 }
 
 .save-profile-btn {
