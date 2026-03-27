@@ -106,9 +106,34 @@ async function handleModeSelection(goalId, mode, today) {
 
   const checkins = getCheckins();
   const checkinKey = `${goalId}_${today}`;
+  const existingMode = checkins[checkinKey] || null;
 
-  // If already checked in today, do nothing
-  if (checkins[checkinKey]) {
+  // Re-clicking the same mode toggles today's record off.
+  if (existingMode === mode) {
+    delete checkins[checkinKey];
+
+    const history = getHistory();
+    const goalHistory = history[goalId] || [];
+    for (let i = goalHistory.length - 1; i >= 0; i--) {
+      if (goalHistory[i] === mode) {
+        goalHistory.splice(i, 1);
+        break;
+      }
+    }
+
+    history[goalId] = goalHistory;
+    goal.progress = recalculateGoalProgress(goal.id);
+
+    localStorage.setItem("jia_goals", JSON.stringify(goals));
+    localStorage.setItem("jia_checkins", JSON.stringify(checkins));
+    localStorage.setItem("jia_history", JSON.stringify(history));
+
+    renderCheckinTab();
+    return;
+  }
+
+  // If already checked in with another mode, keep the original record.
+  if (existingMode) {
     renderCheckinTab();
     return;
   }
@@ -145,7 +170,7 @@ function renderGoalCard(goal, today, checkins) {
   const progressColor = getProgressColor(progress);
 
   let modeSection = isCheckedIn
-    ? `<div class="mode-confirmation" style="background: ${MODES[mode].color};">${mode}</div>`
+    ? `<button class="mode-confirmation mode-btn" data-mode="${mode}" style="background: ${MODES[mode].color};" title="Tap again to undo today's check-in">${mode}</button>`
     : `<div class="mode-buttons">${Object.keys(MODES)
         .map((m) => `<button class="mode-btn" data-mode="${m}">${m}</button>`)
         .join("")}</div>`;
