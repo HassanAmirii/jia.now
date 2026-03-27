@@ -40,13 +40,10 @@ function getDisplayDates() {
 
 function recalculateGoalProgress(goalId) {
   const checkins = getCheckins();
-  const displayDates = getDisplayDates();
-
-  const weights = displayDates.map((dateStr) => {
-    const key = `${goalId}_${dateStr}`;
-    const mode = checkins[key] || "Skipped";
-    return MODES[mode].weight;
-  });
+  const keyPrefix = `${goalId}_`;
+  const weights = Object.entries(checkins)
+    .filter(([key]) => key.startsWith(keyPrefix))
+    .map(([, mode]) => MODES[mode]?.weight ?? 0);
 
   if (!weights.length) return 0;
   return Math.round(weights.reduce((a, b) => a + b, 0) / weights.length);
@@ -85,7 +82,9 @@ function renderStats() {
     });
   });
 
-  const onTrack = goals.filter((g) => g.progress > 40).length;
+  const onTrack = goals.filter(
+    (g) => recalculateGoalProgress(g.id) > 40,
+  ).length;
   const modeCounts = {};
 
   goals.forEach((g) => {
