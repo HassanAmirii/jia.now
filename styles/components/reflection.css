@@ -26,18 +26,35 @@
   font-size: 0.95rem;
   color: var(--text-primary);
   font-family: inherit;
-  resize: vertical;
-  min-height: 100px;
+  line-height: 1.5;
+  min-height: 108px;
+  resize: none;
+  overflow-y: hidden;
   transition: all 0.2s ease;
   box-sizing: border-box;
-  line-height: 1.5;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-muted) 45%, transparent)
+    transparent;
 }
 
 .reflection-textarea:focus {
   outline: none;
   border-color: var(--primary-accent);
   box-shadow: 0 0 0 3px rgba(74, 158, 92, 0.15);
-  background: var(--bg-primary);
+  background: color-mix(in srgb, var(--bg-secondary) 85%, var(--card-bg));
+}
+
+.reflection-textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.reflection-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.reflection-textarea::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--text-muted) 45%, transparent);
+  border-radius: 10px;
 }
 
 .reflection-textarea::placeholder {
