@@ -41,6 +41,12 @@ body {
   line-height: 1.6;
 }
 
+img,
+svg {
+  max-width: 100%;
+  height: auto;
+}
+
 .docs-shell {
   display: grid;
   grid-template-columns: 290px minmax(0, 1fr);
@@ -127,6 +133,7 @@ body {
 .docs-main {
   padding: 2.2rem 2.1rem 3.5rem;
   width: min(980px, 100%);
+  margin: 0 auto;
 }
 
 .hero {
@@ -349,16 +356,18 @@ code {
     height: auto;
     border-right: none;
     border-bottom: 1px solid var(--border);
+    padding: 1rem 0.85rem;
   }
 
   .docs-nav {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.35rem;
+    gap: 0.3rem;
   }
 
   .nav-title {
     grid-column: 1 / -1;
     margin-top: 0.6rem;
+    margin-bottom: 0.2rem;
   }
 
   .docs-main {
@@ -368,12 +377,33 @@ code {
 }
 
 @media (max-width: 640px) {
+  body {
+    line-height: 1.55;
+  }
+
   .docs-nav {
     grid-template-columns: 1fr;
   }
 
+  .nav-link {
+    font-size: 0.86rem;
+    padding: 0.45rem 0.6rem;
+  }
+
+  .docs-main {
+    padding: 1rem 0.75rem 2rem;
+  }
+
   .hero {
     padding: 1.1rem;
+  }
+
+  .hero h2 {
+    font-size: clamp(1.35rem, 7vw, 1.8rem);
+  }
+
+  .doc-section h3 {
+    font-size: 1.08rem;
   }
 
   .card,
@@ -383,9 +413,59 @@ code {
 
   .table-wrap {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .table {
-    min-width: 640px;
+    min-width: 560px;
+  }
+
+  .table th,
+  .table td {
+    font-size: 0.84rem;
+    padding: 0.48rem 0.42rem;
+  }
+
+  .code-block {
+    font-size: 0.77rem;
+    padding: 0.75rem;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 420px) {
+  .docs-sidebar {
+    padding: 0.85rem 0.7rem;
+  }
+
+  .brand {
+    padding: 0.72rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .brand h1 {
+    font-size: 0.95rem;
+  }
+
+  .brand p {
+    display: none;
+  }
+
+  .hero-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .table {
+    min-width: 500px;
+  }
+
+  .code-block {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  code {
+    overflow-wrap: anywhere;
   }
 }
