@@ -21,6 +21,30 @@ function initializeUI() {
   updateDateDisplay();
   setupHeatmapLegend();
   initializeChat();
+  setupAutoResizeTextareas();
+}
+
+function autoResizeTextarea(el) {
+  if (!el) return;
+  el.style.height = "auto";
+  el.style.height = `${el.scrollHeight}px`;
+}
+
+function setupAutoResizeTextareas() {
+  const textareas = document.querySelectorAll(
+    ".profile-textarea, .reflection-textarea, .chat-input",
+  );
+
+  textareas.forEach((el) => {
+    autoResizeTextarea(el);
+    el.addEventListener("input", () => autoResizeTextarea(el));
+  });
+}
+
+function refreshAutoResizeTextareas() {
+  document
+    .querySelectorAll(".profile-textarea, .reflection-textarea, .chat-input")
+    .forEach((el) => autoResizeTextarea(el));
 }
 
 async function updateDateDisplay() {
@@ -77,8 +101,11 @@ function setupEventListeners() {
   document
     .getElementById("chatSend")
     .addEventListener("click", sendChatMessage);
-  document.getElementById("chatInput").addEventListener("keypress", (e) => {
-    if (e.key === "Enter") sendChatMessage();
+  document.getElementById("chatInput").addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      sendChatMessage();
+    }
   });
 
   document.querySelectorAll(".quick-prompt-btn").forEach((btn) => {
@@ -110,7 +137,15 @@ function switchTab(tabName) {
   } else {
     document.getElementById("fabAddGoal").style.display = "none";
     if (tabName === "progress") renderProgressTab();
-    else if (tabName === "reflect") renderReflectTab();
-    else if (tabName === "profile") loadUserProfile();
+    else if (tabName === "reflect") {
+      renderReflectTab();
+      refreshAutoResizeTextareas();
+    } else if (tabName === "profile") {
+      loadUserProfile();
+      refreshAutoResizeTextareas();
+    } else if (tabName === "advisor") {
+      renderChatMessages();
+      refreshAutoResizeTextareas();
+    }
   }
 }
