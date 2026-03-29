@@ -187,7 +187,12 @@ function getWeeklyWindow() {
   const end = new Date();
   end.setHours(0, 0, 0, 0);
   const start = new Date(end);
-  start.setDate(end.getDate() - 6);
+
+  // Calendar week reset: Monday is day 1, Sunday is day 0.
+  const day = end.getDay();
+  const daysSinceMonday = (day + 6) % 7;
+  start.setDate(end.getDate() - daysSinceMonday);
+
   return { start, end };
 }
 

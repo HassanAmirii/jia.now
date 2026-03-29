@@ -286,7 +286,11 @@ function buildWeeklyReportMarkdown() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const start = new Date(today);
-  start.setDate(today.getDate() - 6);
+  const day = today.getDay();
+  const daysSinceMonday = (day + 6) % 7;
+  start.setDate(today.getDate() - daysSinceMonday);
+  const msPerDay = 24 * 60 * 60 * 1000;
+  const windowDays = Math.max(1, Math.floor((today - start) / msPerDay) + 1);
   const contracts = getCommitmentContracts();
 
   const checkins = getCheckins();
@@ -295,7 +299,7 @@ function buildWeeklyReportMarkdown() {
     let totalWeight = 0;
     let skippedDays = 0;
 
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < windowDays; i++) {
       const d = new Date(start);
       d.setDate(start.getDate() + i);
       const dateStr = toLocalDateStr(d);
@@ -307,8 +311,8 @@ function buildWeeklyReportMarkdown() {
       totalWeight += weight;
     }
 
-    const weeklyAvg = Math.round(totalWeight / 7);
-    const coverage = Math.round((loggedDays / 7) * 100);
+    const weeklyAvg = Math.round(totalWeight / windowDays);
+    const coverage = Math.round((loggedDays / windowDays) * 100);
     const overallProgress = recalculateGoalProgress(goal.id);
     const targetDays = contracts[goal.id] || 5;
     const targetMet = loggedDays >= targetDays;
@@ -322,13 +326,14 @@ function buildWeeklyReportMarkdown() {
       overallProgress,
       targetDays,
       targetMet,
+      windowDays,
     };
   });
 
   const tableRows = rows
     .map(
       (r) =>
-        `<tr><td>${escapeHtml(r.name)}</td><td>${r.loggedDays}/7</td><td>${r.coverage}%</td><td>${r.weeklyAvg}%</td><td>${r.targetDays}/7</td><td>${r.targetMet ? "Yes" : "No"}</td><td>${r.overallProgress}%</td></tr>`,
+        `<tr><td>${escapeHtml(r.name)}</td><td>${r.loggedDays}/${r.windowDays}</td><td>${r.coverage}%</td><td>${r.weeklyAvg}%</td><td>${r.targetDays}/7</td><td>${r.targetMet ? "Yes" : "No"}</td><td>${r.overallProgress}%</td></tr>`,
     )
     .join("");
 
