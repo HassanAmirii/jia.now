@@ -38,63 +38,237 @@ function getDisplayDates() {
   return dates;
 }
 
-function recalculateGoalProgress(goalId) {
+function parseDateOnly(dateStr) {
+  return new Date(`${dateStr}T00:00:00`);
+}
+
+function getDaysBetween(startDate, endDate) {
+  const msPerDay = 24 * 60 * 60 * 1000;
+  return Math.max(1, Math.floor((endDate - startDate) / msPerDay) + 1);
+}
+
+function getGoalCheckinEntries(goalId) {
   const checkins = getCheckins();
   const keyPrefix = `${goalId}_`;
-  const weights = Object.entries(checkins)
-    .filter(([key]) => key.startsWith(keyPrefix))
-    .map(([, mode]) => MODES[mode]?.weight ?? 0);
 
-  if (!weights.length) return 0;
-  return Math.round(weights.reduce((a, b) => a + b, 0) / weights.length);
+  return Object.entries(checkins)
+    .filter(([key]) => key.startsWith(keyPrefix))
+    .map(([key, mode]) => {
+      const dateStr = key.slice(keyPrefix.length);
+      return { dateStr, mode };
+    })
+    .filter(
+      ({ dateStr, mode }) => /^\d{4}-\d{2}-\d{2}$/.test(dateStr) && MODES[mode],
+    )
+    .sort((a, b) => a.dateStr.localeCompare(b.dateStr));
+}
+
+function getGoalMetrics(goalId) {
+  const entries = getGoalCheckinEntries(goalId);
+  if (!entries.length) {
+    return {
+      progress: 0,
+      quality: 0,
+      consistency: 0,
+      checkinDays: 0,
+      totalDays: 0,
+    };
+  }
+
+  const firstDate = parseDateOnly(entries[0].dateStr);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const checkinDays = entries.length;
+  const totalDays = getDaysBetween(firstDate, today);
+  const totalWeight = entries.reduce(
+    (sum, { mode }) => sum + (MODES[mode]?.weight ?? 0),
+    0,
+  );
+
+  const quality = Math.round(totalWeight / checkinDays);
+  const consistency = Math.round((checkinDays / totalDays) * 100);
+
+  // Blended score: effort quality matters most, consistency keeps the score honest.
+  const progress = Math.round(quality * 0.7 + consistency * 0.3);
+
+  return {
+    progress,
+    quality,
+    consistency,
+    checkinDays,
+    totalDays,
+  };
+}
+
+function getBestStreakForGoal(goalId) {
+  const entries = getGoalCheckinEntries(goalId);
+  if (!entries.length) return 0;
+
+  let best = 0;
+  let current = 0;
+  let prevDate = null;
+
+  entries.forEach(({ dateStr, mode }) => {
+    const date = parseDateOnly(dateStr);
+    const isConsecutive = prevDate && getDaysBetween(prevDate, date) === 2;
+    const countsTowardStreak = mode !== "Skipped";
+
+    if (!countsTowardStreak) {
+      current = 0;
+    } else if (!prevDate || isConsecutive) {
+      current += 1;
+    } else {
+      current = 1;
+    }
+
+    best = Math.max(best, current);
+    prevDate = date;
+  });
+
+  return best;
+}
+
+function getRecentTopMode(days = 7) {
+  const checkins = getCheckins();
+  const since = new Date();
+  since.setHours(0, 0, 0, 0);
+  since.setDate(since.getDate() - (days - 1));
+
+  const modeCounts = {};
+
+  Object.entries(checkins).forEach(([key, mode]) => {
+    const parts = key.split("_");
+    const dateStr = parts[parts.length - 1];
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(dateStr) || !MODES[mode]) return;
+
+    const date = parseDateOnly(dateStr);
+    if (date >= since) {
+      modeCounts[mode] = (modeCounts[mode] || 0) + 1;
+    }
+  });
+
+  return (
+    Object.entries(modeCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "None"
+  );
+}
+
+function recalculateGoalProgress(goalId) {
+  return getGoalMetrics(goalId).progress;
+}
+
+function getCommitmentContracts() {
+  return JSON.parse(localStorage.getItem("jia_commitment_contracts") || "{}");
+}
+
+function setCommitmentContracts(contracts) {
+  localStorage.setItem("jia_commitment_contracts", JSON.stringify(contracts));
+}
+
+function getWeeklyWindow() {
+  const end = new Date();
+  end.setHours(0, 0, 0, 0);
+  const start = new Date(end);
+  start.setDate(end.getDate() - 6);
+  return { start, end };
+}
+
+function getGoalWeeklyCheckinCount(goalId, startDate, endDate) {
+  const checkins = getCheckins();
+  let count = 0;
+
+  const current = new Date(startDate);
+  while (current <= endDate) {
+    const dateStr = toLocalDateStr(current);
+    if (checkins[`${goalId}_${dateStr}`]) count += 1;
+    current.setDate(current.getDate() + 1);
+  }
+
+  return count;
 }
 
 function renderProgressTab() {
   renderStats();
   renderHeatmap();
   renderChart();
+  renderCommitmentContracts();
   renderGoalProgressList();
+}
+
+function renderCommitmentContracts() {
+  const goals = getGoals();
+  const container = document.getElementById("contractList");
+  if (!container) return;
+
+  if (!goals.length) {
+    container.innerHTML =
+      '<div class="contract-empty">Add goals to create weekly commitment contracts.</div>';
+    return;
+  }
+
+  const contracts = getCommitmentContracts();
+  const { start, end } = getWeeklyWindow();
+
+  container.innerHTML = goals
+    .map((goal) => {
+      const target = contracts[goal.id] || 5;
+      const loggedDays = getGoalWeeklyCheckinCount(goal.id, start, end);
+      const met = loggedDays >= target;
+      const remaining = Math.max(0, target - loggedDays);
+
+      return `
+        <div class="contract-item" data-goal-id="${goal.id}">
+          <div class="contract-item-top">
+            <div class="contract-goal-name">${goal.name}</div>
+            <label class="contract-target-wrap">Target
+              <select class="contract-target-select" data-goal-id="${goal.id}">
+                ${[1, 2, 3, 4, 5, 6, 7]
+                  .map(
+                    (n) =>
+                      `<option value="${n}" ${target === n ? "selected" : ""}>${n}/7</option>`,
+                  )
+                  .join("")}
+              </select>
+            </label>
+          </div>
+          <div class="contract-status ${met ? "met" : "behind"}">
+            ${loggedDays}/7 done · ${met ? "target met" : `${remaining} check-in${remaining > 1 ? "s" : ""} needed`}
+          </div>
+        </div>
+      `;
+    })
+    .join("");
+
+  container.querySelectorAll(".contract-target-select").forEach((select) => {
+    select.addEventListener("change", (e) => {
+      const goalId = e.target.dataset.goalId;
+      const target = Number(e.target.value);
+      const latest = getCommitmentContracts();
+      latest[goalId] = target;
+      setCommitmentContracts(latest);
+      renderCommitmentContracts();
+    });
+  });
 }
 
 function renderStats() {
   const goals = getGoals();
-  const history = getHistory();
-  let totalEffort = 0,
-    count = 0;
-
-  goals.forEach((g) => {
-    (history[g.id] || []).forEach((m) => {
-      totalEffort += MODES[m]?.weight || 0;
-      count++;
-    });
-  });
-
-  const consistency = count ? Math.round(totalEffort / count) : 0;
+  const metrics = goals.map((g) => getGoalMetrics(g.id));
+  const consistency = metrics.length
+    ? Math.round(
+        metrics.reduce((sum, m) => sum + m.consistency, 0) / metrics.length,
+      )
+    : 0;
   let bestStreak = 0;
 
   goals.forEach((g) => {
-    let s = 0;
-    (history[g.id] || []).forEach((m) => {
-      if (m !== "Skipped") {
-        s++;
-        bestStreak = Math.max(bestStreak, s);
-      } else s = 0;
-    });
+    bestStreak = Math.max(bestStreak, getBestStreakForGoal(g.id));
   });
 
   const onTrack = goals.filter(
-    (g) => recalculateGoalProgress(g.id) > 40,
+    (g) => recalculateGoalProgress(g.id) >= 60,
   ).length;
-  const modeCounts = {};
-
-  goals.forEach((g) => {
-    (history[g.id] || [])
-      .slice(-7)
-      .forEach((m) => (modeCounts[m] = (modeCounts[m] || 0) + 1));
-  });
-
-  const topMode =
-    Object.entries(modeCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || "None";
+  const topMode = getRecentTopMode(7);
 
   document.getElementById("statsGrid").innerHTML = `
     <div class="stat-card"><div class="stat-label">Consistency</div><div class="stat-value">${consistency}%</div></div>
@@ -220,16 +394,12 @@ function renderChart() {
 
 function renderGoalProgressList() {
   const goals = getGoals();
-  const history = getHistory();
   document.getElementById("goalProgressList").innerHTML = goals
     .map((g) => {
-      const h = history[g.id] || [];
-      const avg = Math.round(
-        h.reduce((s, m) => s + MODES[m].weight, 0) / (h.length || 1),
-      );
-      const progress = recalculateGoalProgress(g.id); // ← live recalc
+      const metrics = getGoalMetrics(g.id);
+      const progress = metrics.progress;
       const progressColor = getProgressColor(progress);
-      return `<div class="goal-progress-item"><div class="goal-progress-header"><div class="goal-progress-name">${g.name}</div><div class="goal-progress-meta"><span>Avg effort: ${avg}%</span></div></div><div class="progress-bar"><div class="progress-fill" style="width:${progress}%; background: ${progressColor};"></div></div></div>`;
+      return `<div class="goal-progress-item"><div class="goal-progress-header"><div class="goal-progress-name">${g.name}</div><div class="goal-progress-meta"><span>Quality ${metrics.quality}% · Consistency ${metrics.consistency}%</span></div></div><div class="progress-bar"><div class="progress-fill" style="width:${progress}%; background: ${progressColor};"></div></div></div>`;
     })
     .join("");
 }

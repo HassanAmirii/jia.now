@@ -114,22 +114,11 @@ function setupSyncModal() {
             JSON.stringify(importData.userProfile || {}),
           );
 
-          // RECALCULATE progress from history
+          // Recalculate progress from dated check-ins using the live scoring model.
           const goals = JSON.parse(localStorage.getItem("jia_goals"));
-          const history = JSON.parse(localStorage.getItem("jia_history"));
 
           goals.forEach((goal) => {
-            const goalHistory = history[goal.id] || [];
-            if (goalHistory.length > 0) {
-              const totalWeight = goalHistory.reduce(
-                (sum, m) => sum + MODES[m].weight,
-                0,
-              );
-              const avgEffort = totalWeight / goalHistory.length;
-              goal.progress = Math.round(avgEffort);
-            } else {
-              goal.progress = 0;
-            }
+            goal.progress = recalculateGoalProgress(goal.id);
           });
 
           localStorage.setItem("jia_goals", JSON.stringify(goals));

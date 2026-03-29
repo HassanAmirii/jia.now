@@ -3,9 +3,9 @@
 // Mode configurations
 const MODES = {
   "Locked In": { weight: 100, color: "#4a9e5c" },
-  Moving: { weight: 60, color: "#378add" },
-  Crawling: { weight: 30, color: "#ba7517" },
-  Struggled: { weight: 10, color: "#d85a30" },
+  Moving: { weight: 75, color: "#378add" },
+  Crawling: { weight: 50, color: "#ba7517" },
+  Struggled: { weight: 25, color: "#d85a30" },
   Skipped: { weight: 0, color: "#888780" },
 };
 

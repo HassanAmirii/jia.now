@@ -89,6 +89,44 @@
   color: white;
 }
 
+.weekly-report {
+  display: grid;
+  gap: 8px;
+}
+
+.weekly-report-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+}
+
+.weekly-report-table-wrap {
+  overflow-x: auto;
+}
+
+.weekly-report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+.weekly-report-table th,
+.weekly-report-table td {
+  border-bottom: 1px solid var(--border-color);
+  padding: 6px 8px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.weekly-report-table th {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.weekly-report-note {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+}
+
 .chat-input-container {
   background: var(--card-bg);
   border: 0.5px solid var(--border-color);

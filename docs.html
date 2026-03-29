@@ -229,16 +229,21 @@ jia_userProfile</pre
           <div class="card">
             <h4>Goal progress</h4>
             <p>
-              Progress is recalculated from activity start to today. Missing
-              check-ins count as Skipped.
+              Progress blends effort quality with consistency so scores do not
+              inflate when check-ins are missed.
             </p>
             <pre class="code-block">
-progress = avg(weight_for_each_day_from_start_to_today)</pre
+quality = avg(weight_for_logged_checkins)
+consistency = (logged_checkin_days / days_since_first_checkin) * 100
+progress = (quality * 0.7) + (consistency * 0.3)</pre
             >
           </div>
           <div class="card">
             <h4>Consistency</h4>
-            <p>Consistency uses weighted mode history across all goals.</p>
+            <p>
+              Consistency is now based on dated check-in coverage, averaged
+              across goals.
+            </p>
             <pre class="code-block">
 consistency = total_weight / total_entries</pre
             >
