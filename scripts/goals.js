@@ -215,7 +215,11 @@ async function renderCheckinTab() {
   let html = "";
 
   const allCheckedIn =
-    goals.length > 0 && goals.every((goal) => checkins[`${goal.id}_${today}`]);
+    goals.length > 0 &&
+    goals.every((goal) => {
+      const mode = checkins[`${goal.id}_${today}`];
+      return mode && mode !== "Skipped";
+    });
 
   // Sleek one-line banner that matches the bottom message style
   if (allCheckedIn && goals.length > 0) {

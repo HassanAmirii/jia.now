@@ -302,7 +302,7 @@ function buildWeeklyReportMarkdown() {
       const mode = checkins[`${goal.id}_${dateStr}`] || "Skipped";
       const weight = MODES[mode]?.weight ?? 0;
 
-      if (checkins[`${goal.id}_${dateStr}`]) loggedDays += 1;
+      if (mode !== "Skipped") loggedDays += 1;
       if (mode === "Skipped") skippedDays += 1;
       totalWeight += weight;
     }

@@ -42,6 +42,32 @@ function parseDateOnly(dateStr) {
   return new Date(`${dateStr}T00:00:00`);
 }
 
+function getGoalStartDate(goalId, entries) {
+  const goals = getGoals();
+  const goal = goals.find((g) => g.id === goalId);
+  const rawId = goal?.id || goalId;
+  const parsedId = Number(rawId);
+
+  let createdDate = null;
+  if (Number.isFinite(parsedId) && parsedId > 0) {
+    const parsedDate = new Date(parsedId);
+    if (!Number.isNaN(parsedDate.getTime())) {
+      parsedDate.setHours(0, 0, 0, 0);
+      createdDate = parsedDate;
+    }
+  }
+
+  if (!entries.length) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return createdDate || today;
+  }
+
+  const firstEntryDate = parseDateOnly(entries[0].dateStr);
+  if (!createdDate) return firstEntryDate;
+  return createdDate < firstEntryDate ? createdDate : firstEntryDate;
+}
+
 function getDaysBetween(startDate, endDate) {
   const msPerDay = 24 * 60 * 60 * 1000;
   return Math.max(1, Math.floor((endDate - startDate) / msPerDay) + 1);
@@ -65,28 +91,20 @@ function getGoalCheckinEntries(goalId) {
 
 function getGoalMetrics(goalId) {
   const entries = getGoalCheckinEntries(goalId);
-  if (!entries.length) {
-    return {
-      progress: 0,
-      quality: 0,
-      consistency: 0,
-      checkinDays: 0,
-      totalDays: 0,
-    };
-  }
-
-  const firstDate = parseDateOnly(entries[0].dateStr);
+  const activeEntries = entries.filter(({ mode }) => mode !== "Skipped");
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const startDate = getGoalStartDate(goalId, entries);
 
-  const checkinDays = entries.length;
-  const totalDays = getDaysBetween(firstDate, today);
-  const totalWeight = entries.reduce(
+  const checkinDays = activeEntries.length;
+  const totalDays = getDaysBetween(startDate, today);
+  const totalWeight = activeEntries.reduce(
     (sum, { mode }) => sum + (MODES[mode]?.weight ?? 0),
     0,
   );
 
-  const quality = Math.round(totalWeight / checkinDays);
+  // Missing days are treated as implicit skipped (weight 0) by dividing by totalDays.
+  const quality = Math.round(totalWeight / totalDays);
   const consistency = Math.round((checkinDays / totalDays) * 100);
 
   // Blended score: effort quality matters most, consistency keeps the score honest.
@@ -180,7 +198,8 @@ function getGoalWeeklyCheckinCount(goalId, startDate, endDate) {
   const current = new Date(startDate);
   while (current <= endDate) {
     const dateStr = toLocalDateStr(current);
-    if (checkins[`${goalId}_${dateStr}`]) count += 1;
+    const mode = checkins[`${goalId}_${dateStr}`];
+    if (mode && mode !== "Skipped") count += 1;
     current.setDate(current.getDate() + 1);
   }
 
