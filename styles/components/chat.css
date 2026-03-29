@@ -16,9 +16,22 @@
 .status-dot {
   width: 12px;
   height: 12px;
-  background: var(--primary-accent);
   border-radius: 50%;
+}
+
+.status-dot.status-green {
+  background: #4a9e5c;
   box-shadow: 0 0 0 2px rgba(74, 158, 92, 0.2);
+}
+
+.status-dot.status-amber {
+  background: #ba7517;
+  box-shadow: 0 0 0 2px rgba(186, 117, 23, 0.2);
+}
+
+.status-dot.status-gray {
+  background: #888780;
+  box-shadow: 0 0 0 2px rgba(136, 135, 128, 0.2);
 }
 
 .chat-title {

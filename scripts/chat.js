@@ -1,5 +1,6 @@
 // ========== AI CHAT ==========
 const DEEPSEEK_API_URL = "https://api.groq.com/openai/v1/chat/completions";
+let aiStatusPollTimer = null;
 
 function initializeChat() {
   const messages = getChatMessages();
@@ -11,6 +12,62 @@ function initializeChat() {
     localStorage.setItem("jia_chat_messages", JSON.stringify(messages));
   }
   renderChatMessages();
+  initializeAIStatus();
+}
+
+function setAIStatus(state, text) {
+  const dot = document.getElementById("aiStatusDot");
+  const statusText = document.getElementById("aiStatusText");
+  if (!dot || !statusText) return;
+
+  dot.classList.remove("status-green", "status-amber", "status-gray");
+  if (state === "green") dot.classList.add("status-green");
+  else if (state === "amber") dot.classList.add("status-amber");
+  else dot.classList.add("status-gray");
+
+  statusText.textContent = text;
+}
+
+async function checkAIHealth() {
+  try {
+    const response = await fetch("/api/groq?health=1", {
+      method: "GET",
+      headers: { Accept: "application/json" },
+    });
+    const raw = await response.text();
+
+    let data = {};
+    if (raw) {
+      try {
+        data = JSON.parse(raw);
+      } catch {
+        setAIStatus("amber", "AI status unknown (invalid health response)");
+        return;
+      }
+    }
+
+    if (!response.ok || !data.ok) {
+      const reason = data.error || `Health check failed (${response.status})`;
+      setAIStatus("amber", `AI degraded: ${reason}`);
+      return;
+    }
+
+    setAIStatus("green", "AI online and ready");
+  } catch {
+    setAIStatus("gray", "AI offline (network)");
+  }
+}
+
+function initializeAIStatus() {
+  setAIStatus("gray", "Checking AI status...");
+  checkAIHealth();
+
+  if (aiStatusPollTimer) clearInterval(aiStatusPollTimer);
+  aiStatusPollTimer = setInterval(checkAIHealth, 60000);
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) checkAIHealth();
+  });
 }
 
 function renderChatMessages() {
@@ -171,6 +228,7 @@ async function callDeepSeekAPI(messages) {
   }
 
   if (!response.ok) {
+    setAIStatus("amber", "AI degraded (request failed)");
     throw new Error(
       data.error?.message ||
         data.error ||
@@ -184,9 +242,11 @@ async function callDeepSeekAPI(messages) {
     !data.choices.length ||
     !data.choices[0]?.message?.content
   ) {
+    setAIStatus("amber", "AI degraded (empty response)");
     throw new Error("AI returned an empty response.");
   }
 
+  setAIStatus("green", "AI online and ready");
   return data.choices[0].message.content;
 }
 

@@ -2,6 +2,18 @@
 
 export async function handler(event) {
   try {
+    if (event.httpMethod === "GET") {
+      return {
+        statusCode: process.env.GROQ_API_KEY ? 200 : 500,
+        body: JSON.stringify({
+          ok: Boolean(process.env.GROQ_API_KEY),
+          error: process.env.GROQ_API_KEY
+            ? null
+            : "GROQ_API_KEY is not configured",
+        }),
+      };
+    }
+
     if (event.httpMethod !== "POST") {
       return {
         statusCode: 405,
